@@ -1,0 +1,7 @@
+datasets
+pandas
+sentence-transformers
+psycopg2-binary
+pgvector[psycopg2]
+torch 
+scikit-learn 
