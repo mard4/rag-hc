@@ -1,0 +1,82 @@
+# services:
+#   db:
+#     image: ankane/pgvector:latest
+#     ports:
+#       - "5432:5432"
+#     environment:
+#       POSTGRES_DB: medquad_db
+#       POSTGRES_USER: user
+#       POSTGRES_PASSWORD: password
+#     volumes:
+#       - db_data:/var/lib/postgresql/data
+#       - ./init_db:/docker-entrypoint-initdb.d 
+
+#     build:
+#       context: .
+#       dockerfile: Dockerfile.db
+
+# volumes:
+#   db_data:
+
+services:
+  db:
+    # Non specifichiamo 'image' qui, perché 'build' prenderà il sopravvento
+    build:
+      context: . 
+      dockerfile: ./data_ingestion/Dockerfile.db # Il Dockerfile per il DB
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: medquad_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./init_db:/docker-entrypoint-initdb.d # Per creare l'estensione vector
+
+  ollama: # Servizio Ollama (se lo usi per il backend)
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  # backend: # Il tuo servizio backend FastAPI
+  #   build: ./backend
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     POSTGRES_DB: ${POSTGRES_DB}
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #     POSTGRES_HOST: db # Nome del servizio DB in Docker Compose
+  #     POSTGRES_PORT: 5432
+  #     OLLAMA_BASE_URL: http://ollama:11434 # Nome del servizio Ollama
+  #     OLLAMA_MODEL_NAME: ${OLLAMA_MODEL_NAME}
+  #   depends_on:
+  #     - db
+  #     - ollama
+  #   volumes:
+  #     - ./backend:/app
+  #   command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  data_ingestion: # Nuovo servizio di data ingestion
+    build:
+      context: . # Il contesto di build è la root del progetto
+      dockerfile: ./data_ingestion/Dockerfile # Il Dockerfile per l'ingestione
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: db # Nome del servizio DB in Docker Compose
+      POSTGRES_PORT: 5432
+    depends_on:
+      - db # Assicurati che il DB sia avviato prima dell'ingestione
+    # Il comando per eseguire lo script di ingestione.
+    # `python ingest_data.py` è il CMD nel Dockerfile, ma puoi sovrascriverlo qui se vuoi.
+    # Per eseguire l'ingestione una volta e poi uscire, non è necessario un comando continuo.
+    # Puoi avviare questo servizio manualmente quando serve.
+
+volumes:
+  db_data:
+  ollama_data:
