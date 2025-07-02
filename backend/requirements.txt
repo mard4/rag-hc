@@ -1,0 +1,9 @@
+# backend/requirements.txt
+fastapi
+uvicorn[standard]
+psycopg2-binary
+pgvector
+sentence-transformers
+langchain-core
+langchain-community
+python-dotenv
