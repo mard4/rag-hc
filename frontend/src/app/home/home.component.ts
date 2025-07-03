@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ChatService, QueryResponse } from '../services/chat.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -7,30 +8,33 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss',
+  styleUrl: './home.component.scss'
 })
 export class HomeComponent {
   userInput = '';
   chatHistory: { role: 'user' | 'assistant'; text: string }[] = [];
+  loading = false;
 
-  async sendMessage() {
-    if (!this.userInput.trim()) return;
+  constructor(private chatService: ChatService) {}
 
-    this.chatHistory.push({ role: 'user', text: this.userInput });
+  sendMessage() {
+    const question = this.userInput.trim();
+    if (!question) return;
 
-    // Simulazione chiamata API (da sostituire con il backend reale)
-    const response = await this.fakeRagResponse(this.userInput);
-
-    this.chatHistory.push({ role: 'assistant', text: response });
+    this.chatHistory.push({ role: 'user', text: question });
     this.userInput = '';
-  }
+    this.loading = true;
 
-  // Mock temporaneo
-  async fakeRagResponse(question: string): Promise<string> {
-    if (question.includes('mal di testa')) {
-      return `Potrebbe trattarsi di un'emicrania. Ti consiglio il Dr. Rossi (neurologo). 
-Slot disponibili: domani 10:00 o giovedì 14:30. Vuoi prenotare?`;
-    }
-    return `Sto analizzando i dati… ti risponderò tra poco.`;
+    this.chatService.sendQuestion(question).subscribe({
+      next: (res: QueryResponse) => {
+        this.chatHistory.push({ role: 'assistant', text: res.answer });
+        this.loading = false;
+      },
+      error: (err) => {
+        this.chatHistory.push({ role: 'assistant', text: '❌ Errore nella risposta dal server.' });
+        console.error(err);
+        this.loading = false;
+      }
+    });
   }
 }
