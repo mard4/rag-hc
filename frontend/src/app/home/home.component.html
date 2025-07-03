@@ -1,1 +1,20 @@
-<p>home works!</p>
+<section class="chat-container">
+    <h2>Virtual Assistant</h2>
+
+    <div class="chat-box">
+        <div *ngFor="let msg of chatHistory" [class]="msg.role">
+          <span class="avatar">
+            <img *ngIf="msg.role === 'user'" src="assets/TUNG.png" width="10%;" alt="User" />
+            <img *ngIf="msg.role === 'assistant'" src="assets/BALLERINA.png" width="10%;" alt="Assistant" />
+          </span>
+          <span class="text">{{ msg.text }}</span>
+        </div>
+      </div>
+      
+  
+    <form (submit)="sendMessage(); $event.preventDefault()" class="input-box">
+      <input [(ngModel)]="userInput" name="input" placeholder="Questions?" />
+      <button type="submit">Send</button>
+    </form>
+  </section>
+  
