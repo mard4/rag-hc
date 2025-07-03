@@ -6,8 +6,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from typing import List
 
-import config as config # Importa la configurazione
-from models import ContextDocument # Importa il modello ContextDocument
+import config as config 
+from models import ContextDocument 
 
 class LLMService:
     _embedding_model = None
@@ -49,23 +49,27 @@ class LLMService:
         if context_docs:
             formatted_contexts = []
             for i, doc in enumerate(context_docs):
-                formatted_contexts.append(f"Documento {i+1}:\nDomanda: {doc.question}\nRisposta: {doc.answer}")
+                formatted_contexts.append(f"Document {i+1}:\nQuestion: {doc.question}\nAnswer: {doc.answer}")
             context_text = "\n\n".join(formatted_contexts)
         
-        # Definizione del prompt per l'LLM
         if context_text:
             prompt_template = ChatPromptTemplate.from_messages(
                 [
-                    ("system", "Sei un assistente medico utile. Basati solo sulle informazioni contestuali fornite per rispondere alla domanda. Se le informazioni non contengono la risposta, devi dire educatamente che non hai informazioni sufficienti nel contesto fornito per rispondere."),
-                    ("user", "Informazioni contestuali:\n{context}\n\nDomanda: {question}\n\nRisposta:"),
+                    ("system", "Sei un assistente medico utile."
+                    " Basati solo sulle informazioni contestuali fornite per rispondere alla domanda."
+                    "SOLO Se le informazioni non contengono la risposta, "
+                    "devi dire educatamente ed in brevissimo (poche parole) che non hai informazioni sufficienti nel contesto fornito per rispondere."),
+                    ("user", "Informazioni contestuali:\n{context}\n\Question: {question}\n\Answer:"),
                 ]
             )
         else:
-            # Fallback se non si trova nessun contesto rilevante
             prompt_template = ChatPromptTemplate.from_messages(
                 [
-                    ("system", "Sei un assistente medico utile. Non hai accesso a informazioni specifiche. Rispondi alla domanda basandoti sulla tua conoscenza generale, ma avvisa l'utente che la tua risposta potrebbe non essere basata su dati specifici e potresti non avere tutte le informazioni."),
-                    ("user", "{question}\n\nRisposta:"),
+                    ("system", "Sei un assistente medico utile."
+                    " Non hai accesso a informazioni specifiche."
+                    " Rispondi alla domanda basandoti sulla tua conoscenza generale,"
+                    " ma brevemente in poche parole avvisa l'utente che la tua risposta potrebbe non essere basata su dati specifici e potresti non avere tutte le informazioni."),
+                    ("user", "{question}\n\Answer:"),
                 ]
             )
 

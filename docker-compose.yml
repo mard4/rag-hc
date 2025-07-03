@@ -38,40 +38,41 @@ services:
       - ollama_data:/root/.ollama
 
   backend: 
-    build:
-      context: .
-      dockerfile: ./backend/Dockerfile 
-    ports:
-      - "8000:8000"
-    container_name: backend      
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_HOST: db 
-      POSTGRES_PORT: 5432
-      OLLAMA_BASE_URL: http://ollama:11434 
-      OLLAMA_MODEL_NAME: ${OLLAMA_MODEL_NAME}
-    depends_on:
-      - db
-      - ollama
-    volumes:
-      - ./backend:/app
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      build:
+        context: .
+        dockerfile: ./backend/Dockerfile
+      ports: [ "8000:8000" ]
+      container_name: backend      
+      environment:
+        POSTGRES_DB: ${POSTGRES_DB}
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_HOST: db
+        POSTGRES_PORT: 5432
+        OLLAMA_BASE_URL: http://ollama:11434
+        OLLAMA_MODEL_NAME: ${OLLAMA_MODEL_NAME}
+      depends_on: [ db, ollama ]
+      volumes:
+        - ./backend:/app
 
   frontend:
       build:
         context: ./frontend
         dockerfile: Dockerfile
-      ports:
-        - "8080:80"  
-      container_name: frontend               
-      depends_on:
-        - db                      
-      environment:
-        - API_URL=http://backend:8000
+        args:
+          API_URL: http://localhost:8000
+      ports: [ "8080:80" ]
+      container_name: frontend
+      depends_on: [ backend ]
+      volumes: []
+      # environment:
+      #   - API_URL=http://backend:8000
 
 
 volumes:
   db_data:
   ollama_data:
+
+networks:
+  default:
+    name: ragnet
