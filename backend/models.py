@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Dict
+from typing import List, Dict,Optional
 
 # richiesta di query (input dell'utente)
 class QueryRequest(BaseModel):
@@ -8,7 +8,8 @@ class QueryRequest(BaseModel):
 #singolo documento contestuale recuperato
 class ContextDocument(BaseModel):
     question: str
-    answer: str
+    answer: Optional[str] = None
+    context: Optional[str] = None     
 
 #risposta dell'API RAG
 class QueryResponse(BaseModel):

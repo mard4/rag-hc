@@ -5,7 +5,7 @@ from pgvector.psycopg2 import register_vector
 import os
 from connection import *
 
-print("Starting data ingestion for MedQuAD...")
+print("---------------------------------- \n  Starting data ingestion for MedQuAD...")
 ds = load_dataset("lavita/MedQuAD")
 data = ds['train']
 ##print(f"# data in MedQuAD: {len(data)}")
@@ -73,6 +73,8 @@ def data_ingestion(data, cur, conn):
             break
 
     print("Ingestione dei dati medquad completata.")
+
+data_ingestion(data, cur, conn)
 
 cur.close()
 conn.close()

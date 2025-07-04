@@ -21,7 +21,6 @@ https://physionet.org/content/mimic-iii-question-answer/1.0.0/
 
 
 # TO-DO: 
-- Finire ingest_data_mimic.py
-- Vedere se add altre info from medquad/mimic-iii columns
+- Forse, aggiungere altre info from medquad/mimic-iii columns
 
 

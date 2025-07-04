@@ -7,6 +7,7 @@ docker compose up -d
 docker exec -it ollama ollama pull llama3
 
 docker exec -it db  psql -U user -d db
+\d medquad
 SELECT COUNT(*) FROM medquad;
 SELECT question, SUBSTRING(answer, 1, 50) || '...' as answer_preview, question_embedding FROM medquad LIMIT 5;
 
@@ -14,7 +15,7 @@ SELECT question, SUBSTRING(answer, 1, 50) || '...' as answer_preview, question_e
 backend
 curl -X POST "http://localhost:8000/ask" \
      -H "Content-Type: application/json" \
-     -d '{"query": "What are the common symptoms of diabetes?"}'
+     -d '{"query": "What is keratoderma?"}'
 
 
 ## frontend
