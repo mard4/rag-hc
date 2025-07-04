@@ -5,6 +5,9 @@ import config as config
 from models import QueryRequest, QueryResponse, ContextDocument 
 from services.db_service import retrieve_relevant_data
 from services.llm_service import LLMService
+import psycopg2
+from pgvector.psycopg2 import register_vector
+import os
 
 app = FastAPI(
     title="MedQuAD RAG API",
@@ -23,6 +26,7 @@ app.add_middleware(
 async def startup_event():
     LLMService.get_embedding_model()
     LLMService.get_llm_model()
+
 
 @app.post("/ask", response_model=QueryResponse, status_code=status.HTTP_200_OK)
 async def ask_question(request: QueryRequest):

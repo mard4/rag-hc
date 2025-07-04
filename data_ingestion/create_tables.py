@@ -52,17 +52,20 @@ query_chat = """CREATE TABLE IF NOT EXISTS chat (
             );
             """
 
-try:
-    cur.execute(query_patients)
-    cur.execute(query_doctors)
-    cur.execute(query_bookings)
-    cur.execute(query_chat)
+def create_tables(cur,conn, query_patients, query_doctors, query_bookings, query_chat):
+    try:
+        cur.execute(query_patients)
+        cur.execute(query_doctors)
+        cur.execute(query_bookings)
+        cur.execute(query_chat)
 
-    conn.commit()
-    print("Tables patients, doctors, chat, bookings created successfully.")
-except Exception as e:
-    print(f"Error creating tables {e}")
-    conn.rollback()
+        conn.commit()
+        print("Tables patients, doctors, chat, bookings created successfully.")
+    except Exception as e:
+        print(f"Error creating tables {e}")
+        conn.rollback()
+
+create_tables(cur,conn, query_patients, query_doctors, query_bookings, query_chat)
 
 cur.close()
 conn.close()

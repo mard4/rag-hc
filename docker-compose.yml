@@ -30,14 +30,14 @@ services:
       - db 
 
   ollama:
-    image: ollama/ollama
-    ports:
-      - "11434:11434"
-    container_name: ollama      
-    volumes:
-      - ollama_data:/root/.ollama
-    entrypoint: >
-      sh -c "ollama pull llama3 && ollama serve"
+      image: ollama/ollama
+      ports:
+        - "11434:11434"
+      container_name: ollama      
+      volumes:
+        - ollama_data:/root/.ollama
+      entrypoint: >
+        /bin/sh -c "ollama serve & sleep 5; ollama pull llama3; wait"
 
   backend: 
       build:
