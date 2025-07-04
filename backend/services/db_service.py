@@ -6,21 +6,7 @@ from typing import List, Dict
 
 import config as config
 from models import ContextDocument
-
-def get_db_connection():
-    try:
-        conn = psycopg2.connect(
-            dbname=config.DB_NAME,
-            user=config.DB_USER,
-            password=config.DB_PASSWORD,
-            host=config.DB_HOST,
-            port=config.DB_PORT
-        )
-        register_vector(conn) 
-        return conn
-    except Exception as e:
-        print(f"Error connecting to DB: {e}")
-        raise 
+from connection import *
 
 def retrieve_relevant_data(query_embedding: List[float], top_k: int = config.TOP_K_RESULTS) -> List[ContextDocument]:
     """
@@ -35,8 +21,7 @@ def retrieve_relevant_data(query_embedding: List[float], top_k: int = config.TOP
     """
     conn = None
     try:
-        conn = get_db_connection()
-        cur = conn.cursor()
+        conn, cur = get_connection()  
 
         # query di similarità vettoriale
         # <-> per la distanza coseno (più piccola = più simile)

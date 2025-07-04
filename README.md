@@ -4,9 +4,9 @@ source venv/bin/activate
 
 ### Start project
 docker compose up -d
-docker compose run --rm data_ingestion python ingest_data.py
+docker exec -it ollama ollama pull llama3
 
-docker exec -it rag-hc-db-1  psql -U user -d medquad_db
+docker exec -it db  psql -U user -d db
 SELECT COUNT(*) FROM medquad;
 SELECT question, SUBSTRING(answer, 1, 50) || '...' as answer_preview, question_embedding FROM medquad LIMIT 5;
 
@@ -21,13 +21,13 @@ curl -X POST "http://localhost:8000/ask" \
 npx @angular/cli@17 new my-front --routing --style=scss
 
 ## llama
-docker exec -it rag-hc-ollama-1 /bin/bash
-ollama list
-NAME    ID    SIZE    MODIFIED 
-root@7e062858cbd9:/# ollama pull llama3
+docker exec -it ollama ollama pull llama3
 
 
 -----------------------------------------------------------------------------------------------------------------
+TODO :  SCHEMA
+
+
 
 challenge consiste nello sviluppare un assistente virtuale per il settore sanitario. L'obiettivo è creare un sistema che possa:
 -rispondere a domande complesse dei pazienti

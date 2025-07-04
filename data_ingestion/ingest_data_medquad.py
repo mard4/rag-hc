@@ -3,37 +3,26 @@ from sentence_transformers import SentenceTransformer
 import psycopg2
 from pgvector.psycopg2 import register_vector
 import os
+from connection import *
 
+print("Starting data ingestion for MedQuAD...")
 ds = load_dataset("lavita/MedQuAD")
 data = ds['train']
-print(f"# data in MedQuAD: {len(data)}")
+##print(f"# data in MedQuAD: {len(data)}")
 
 ## Embedding model
-model = SentenceTransformer('all-MiniLM-L6-v2')
-print("Modello di embedding caricato.")
+model = "all-MiniLM-L6-v2"
+model = SentenceTransformer(model)
+print(f"Loaded embedding model {model}")
 
 ## Postgres
-print("Connessione al database PostgreSQL...")
-try:
-    conn = psycopg2.connect(
-        dbname="medquad_db",
-        user="user",
-        password="password",
-        host="db", # O il nome del servizio Docker 'db' se lo script gira in un altro container
-        port="5432"
-    )
-    register_vector(conn) # Registra il tipo VECTOR per psycopg2
-    cur = conn.cursor()
-    print("Connessione al database riuscita.")
-except Exception as e:
-    print(f"Errore di connessione al database: {e}")
-    exit()
+conn, cur = get_connection()
 
 # Creazione della tabella
 # dimensione del vettore == dimensione dell'output del modello di embedding.
 # all-MiniLM-L6-v2 produce vettori di dimensione 384
 vector_dimension = model.get_sentence_embedding_dimension()
-print(f"Dimensione del vettore attesa: {vector_dimension}")
+##print(f"Dimensione del vettore attesa: {vector_dimension}")
 
 cur.execute(f"""
     CREATE EXTENSION IF NOT EXISTS vector;
@@ -46,7 +35,7 @@ cur.execute(f"""
     );
 """)
 conn.commit()
-print("Tabella 'medquad' creata o già esistente.")
+print("Table medquad created successfully.")
 
 # Inserimento dei dati
 def data_ingestion(data, cur, conn):
@@ -83,8 +72,8 @@ def data_ingestion(data, cur, conn):
             print(f"Errore durante l'inserimento batch {i}-{i+batch_size}: {e}")
             break
 
-    print("Ingestione dei dati completata.")
+    print("Ingestione dei dati medquad completata.")
 
 cur.close()
 conn.close()
-print("Connessione al database chiusa.")
+print("Connection closed for medquad")
