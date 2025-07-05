@@ -33,25 +33,4 @@ export class HomeComponent {
     // e inizializziamo user$
     this.user$ = this.authService.currentUser;
   }
-
-  sendMessage() {
-    const question = this.userInput.trim();
-    if (!question) return;
-
-    this.chatHistory.push({ role: 'user', text: question });
-    this.userInput = '';
-    this.loading = true;
-
-    this.chatService.sendQuestion(question).subscribe({
-      next: (res: QueryResponse) => {
-        this.chatHistory.push({ role: 'assistant', text: res.answer });
-        this.loading = false;
-      },
-      error: (err) => {
-        this.chatHistory.push({ role: 'assistant', text: '❌ Errore nella risposta dal server.' });
-        console.error(err);
-        this.loading = false;
-      }
-    });
-  }
 }

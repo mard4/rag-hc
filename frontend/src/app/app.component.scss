@@ -1,56 +1,89 @@
 :host {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    font-family: 'Segoe UI', sans-serif;
-    background: #f2f4f6;
-    color: #333;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f2f4f6;
+  color: #333;
+}
+
+.navbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background: #78B6F5;
+  color: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.nav-links a,
+.btn-nav {
+  color: white;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+}
+
+.nav-links a:hover,
+.btn-nav:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-links a.active {
+  text-decoration: underline;
+}
+
+.welcome {
+  margin-left: 1rem;
+  font-weight: 500;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+  background: #e9ecef;
+  border-top: 1px solid #ccc;
+}
+
+@media (max-width: 768px) {
   .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #78B6F5;
-    color: white;
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-  
-    .nav-links a {
-      color: white;
-      margin-left: 1.5rem;
-      text-decoration: none;
-      font-weight: 500;
-      transition: opacity 0.2s;
-  
-      &.active {
-        text-decoration: underline;
-      }
-  
-      &:hover {
-        opacity: 0.85;
-      }
-    }
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .main-content {
-    flex: 1;
-    padding: 2rem;
-    max-width: 960px;
-    margin: 0 auto;
+
+  .nav-links {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-top: 1rem;
   }
-  
-  .footer {
-    text-align: center;
-    padding: 1rem;
-    font-size: 0.9rem;
-    color: #666;
-    background: #e9ecef;
-    border-top: 1px solid #ccc;
-  }
-  
+}

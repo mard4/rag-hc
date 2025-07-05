@@ -55,3 +55,29 @@
     }
   }
   
+  .home-container {
+    text-align: center;
+    padding: 4rem 2rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    margin: 3rem auto;
+    max-width: 700px;
+    transition: transform 0.3s ease;
+  }
+  
+  .home-container:hover {
+    transform: translateY(-3px);
+  }
+  
+  .home-container h1 {
+    font-size: 2.5rem;
+    color: #1a73e8;
+    margin-bottom: 1rem;
+  }
+  
+  .home-container p {
+    font-size: 1.25rem;
+    color: #555;
+  }
+  

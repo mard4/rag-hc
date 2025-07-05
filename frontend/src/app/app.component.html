@@ -1,25 +1,22 @@
 <header class="navbar">
   <div class="logo">🩺 HealthcAIre</div>
   <nav class="nav-links">
-    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-      Home
-    </a>
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
     <a routerLink="/chat" routerLinkActive="active">Chat</a>
     <a routerLink="/bookings" routerLinkActive="active">Bookings</a>
 
-    <!-- Se l’utente è loggato: mostra nome + logout -->
     <ng-container *ngIf="user$ | async as user; else loggedOut">
       <span class="welcome">User: {{ user.name }}!</span>
       <button class="btn btn-nav" (click)="logout()">Logout</button>
     </ng-container>
 
-    <!-- Se non è loggato: mostra link a login/registrati -->
     <ng-template #loggedOut>
       <a routerLink="/login" class="btn btn-nav">Login</a>
       <a routerLink="/register" class="btn btn-nav">Registrati</a>
     </ng-template>
   </nav>
 </header>
+
 
 <main class="main-content">
   <router-outlet></router-outlet>
