@@ -66,7 +66,7 @@ export class AuthService {
       tap(response => {
         // salva token e utente raw in localStorage
         if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('jwtToken', response.access_token);
+          localStorage.setItem('access_token', response.access_token);
           localStorage.setItem('currentUser', JSON.stringify(response.user));
         }
         // pushiamo subito il valore iniziale
@@ -88,7 +88,7 @@ export class AuthService {
     // Conditionally remove from localStorage only in browser
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('currentUser');
-      localStorage.removeItem('jwtToken');
+      localStorage.removeItem('access_token');
     }
 
     this.currentUserSubject.next(null);
