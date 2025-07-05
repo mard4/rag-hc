@@ -31,7 +31,7 @@ export class ChatComponent {
         this.loading = false;
       },
       error: (err) => {
-        this.chatHistory.push({ role: 'assistant', text: '❌ Errore nella risposta dal server.' });
+        this.chatHistory.push({ role: 'assistant', text: '❌ Error' });
         console.error(err);
         this.loading = false;
       }

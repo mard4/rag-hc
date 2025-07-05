@@ -1,14 +1,12 @@
-<div>
-  <div *ngIf="user$ | async as user">
-    <p>Wleocme anche qui, {{ user.name }}!</p>
-  </div>
-  
-  <h1>Welcome!</h1>
+<div class="home-container" *ngIf="user$ | async as user">
+  <h1>Welcome {{ user.name }}!!
+  <img src="assets/TUNG.png" width="10%;" alt="User" />
+  </h1>
   <p>Are you looking to book an appointment, ask a question or?</p>
+  <p>Feel free to use the chat below to ask Dr. B. Cappuccina anything you like!</p>
+</div>
 
   <div class="chat-section">
     <h2>Chat with Dr. B. Cappuccina</h2>
     <app-chat></app-chat>
   </div>
-
-</div>
