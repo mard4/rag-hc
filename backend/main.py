@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware # Per gestire le richieste da frontend diversi
-
+import uvicorn
 import config as config 
 from models import QueryRequest, QueryResponse, ContextDocument 
 from services.db_service import retrieve_relevant_data
@@ -8,9 +8,12 @@ from services.llm_service import LLMService
 import psycopg2
 from pgvector.psycopg2 import register_vector
 import os
+from db_utils import get_db
+from login import router as auth_router
+from connection import *
 
 app = FastAPI(
-    title="MedQuAD RAG API",
+    title="RAG API",
     version="1.0.0"
 )
 
@@ -22,11 +25,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth_router)
+
 @app.on_event("startup")
 async def startup_event():
+    print("Starting up FastAPI application...")
     LLMService.get_embedding_model()
     LLMService.get_llm_model()
+    print("FastAPI startup complete.")
 
+@app.get("/health", status_code=status.HTTP_200_OK)
+async def health_check():
+    """Verifica lo stato di salute dell'API."""
+    return {"status": "ok", "message": "Auth API is running."}
 
 @app.post("/ask", response_model=QueryResponse, status_code=status.HTTP_200_OK)
 async def ask_question(request: QueryRequest):
@@ -55,10 +66,6 @@ async def ask_question(request: QueryRequest):
         print(f"[{__name__}] Errore durante l'elaborazione della domanda: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Errore interno del server: {e}")
 
-@app.get("/health", status_code=status.HTTP_200_OK)
-async def health_check():
-    """Verifica lo stato di salute dell'API."""
-    return {"status": "ok", "message": "MedQuAD RAG API is running."}
 
 if __name__ == '__main__':
     import uvicorn

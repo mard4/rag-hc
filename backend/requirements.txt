@@ -7,3 +7,6 @@ sentence-transformers
 langchain-core
 langchain-community
 python-dotenv
+bcrypt
+python-jose[cryptography]
+pydantic[email]
