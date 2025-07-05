@@ -1,0 +1,217 @@
+:host {
+    display: block;
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+  }
+  
+  .dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  }
+  
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #007bff;
+  
+    h1 {
+      color: #007bff;
+      font-size: 2.8em;
+      margin: 0;
+      font-weight: 600;
+    }
+  }
+  
+  .actions {
+    .btn-primary {
+      background-color: #28a745;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  
+      &:hover {
+        background-color: #218838;
+      }
+    }
+  }
+  
+  .filters {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #e9f5ff;
+    border-radius: 10px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+  
+      label {
+        font-weight: bold;
+        color: #333;
+        font-size: 1.05em;
+      }
+  
+      select, input[type="date"] {
+        padding: 10px 15px;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        font-size: 1em;
+        min-width: 200px;
+        appearance: none; // Rimuove stili di default del browser
+        background-color: white;
+        cursor: pointer;
+  
+        &:focus {
+          border-color: #007bff;
+          outline: none;
+          box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+      }
+    }
+  }
+  
+  .booking-list {
+    h2 {
+      color: #555;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 2em;
+      font-weight: 500;
+    }
+  }
+  
+  .no-bookings {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+    font-style: italic;
+    font-size: 1.2em;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    margin-top: 30px;
+    border: 1px dashed #ced4da;
+  
+    .no-data-img {
+      max-width: 150px;
+      margin-top: 20px;
+      opacity: 0.7;
+    }
+  }
+  
+  .bookings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+  }
+  
+  .booking-card {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+  
+    .card-header {
+      background-color: #f4f6f9;
+      padding: 15px 20px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  
+      .booking-type {
+        font-weight: bold;
+        color: #007bff;
+        font-size: 1.1em;
+      }
+  
+      .booking-status {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.85em;
+        font-weight: bold;
+        color: white;
+  
+        &.status-confirmed { background-color: #28a745; } // Green
+        &.status-pending { background-color: #ffc107; }   // Orange
+        &.status-cancelled { background-color: #dc3545; } // Red
+        &.status-completed { background-color: #6c757d; } // Grey
+      }
+    }
+  
+    .card-body {
+      padding: 20px;
+      flex-grow: 1;
+  
+      h3 {
+        margin-top: 0;
+        color: #343a40;
+        font-size: 1.4em;
+        margin-bottom: 10px;
+      }
+  
+      p {
+        margin-bottom: 8px;
+        color: #666;
+        font-size: 0.95em;
+      }
+  
+      strong {
+        color: #444;
+      }
+    }
+  
+    .card-actions {
+      padding: 15px 20px;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+  
+      .btn {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: background-color 0.3s ease;
+      }
+  
+      .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        &:hover { background-color: #5a6268; }
+      }
+  
+      .btn-danger {
+        background-color: #dc3545;
+        color: white;
+        &:hover { background-color: #c82333; }
+      }
+    }
+  }

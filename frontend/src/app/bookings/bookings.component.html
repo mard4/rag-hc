@@ -1,0 +1,55 @@
+<div class="dashboard-container">
+    <header class="dashboard-header">
+      <h1>Gestione Appuntamenti</h1>
+      <div class="actions">
+        <button class="btn btn-primary" (click)="onAddBooking()">+ Nuovo Appuntamento</button>
+      </div>
+    </header>
+  
+    <div class="filters">
+      <div class="filter-group">
+        <label for="doctorFilter">Dottore:</label>
+        <select id="doctorFilter" [(ngModel)]="selectedDoctorId" (change)="applyFilters()">
+          <option value="all">Tutti i Dottori</option>
+          <option *ngFor="let doc of doctors" [value]="doc.id">{{ doc.name }} ({{ doc.specialty }})</option>
+        </select>
+      </div>
+  
+      <div class="filter-group">
+        <label for="dateFilter">Data:</label>
+        <input type="date" id="dateFilter" [(ngModel)]="selectedDate" (change)="applyFilters()">
+      </div>
+    </div>
+  
+    <div class="booking-list">
+      <h2>Appuntamenti Filtrati</h2>
+  
+      <div *ngIf="filteredBookings.length === 0" class="no-bookings">
+        <p>Nessun appuntamento trovato per i criteri selezionati.</p>
+        <img src="assets/no-data.png" alt="Nessun dato" class="no-data-img">
+      </div>
+  
+      <div *ngIf="filteredBookings.length > 0" class="bookings-grid">
+        <div class="booking-card" *ngFor="let booking of filteredBookings">
+          <div class="card-header">
+            <span class="booking-type">{{ booking.type | titlecase }}</span>
+            <span class="booking-status" [ngClass]="getStatusClass(booking.status)">
+              {{ booking.status | titlecase }}
+            </span>
+          </div>
+          <div class="card-body">
+            <h3>{{ booking.patient?.name }} {{ booking.patient?.surname }}</h3>
+            <p><strong>Dottore:</strong> {{ booking.doctor?.name }}</p>
+            <p><strong>Data:</strong> {{ booking.startTime | date:'fullDate' }}</p>
+            <p><strong>Ora:</strong> {{ booking.startTime | date:'shortTime' }} - {{ booking.endTime | date:'shortTime' }}</p>
+            <!-- <p *ngIf="booking.patient?.phone"><strong>Tel. Paziente:</strong> {{ booking.patient?.phone }}</p> -->
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-secondary" (click)="onEditBooking(booking)">Modifica</button>
+            <button class="btn btn-danger" (click)="onDeleteBooking(booking.id)">Elimina</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    </div>

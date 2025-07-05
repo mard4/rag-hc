@@ -6,7 +6,7 @@ source venv/bin/activate
 docker compose up -d
 docker exec -it ollama ollama pull llama3
 
-docker exec -it db  psql -U user -d db
+docker exec -it postgres_dbvector  psql -U user -d db
 \d medquad
 SELECT COUNT(*) FROM medquad;
 SELECT question, SUBSTRING(answer, 1, 50) || '...' as answer_preview, question_embedding FROM medquad LIMIT 5;
@@ -24,7 +24,26 @@ npx @angular/cli@17 new my-front --routing --style=scss
 ## llama
 docker exec -it ollama ollama pull llama3
 
+## check backend login e register
+curl -X POST http://localhost:8000/api/auth/register \
+-H "Content-Type: application/json" \
+-d '{
+  "email": "test@example.com",
+  "password": "yourpassword",
+  "name": "Test",
+  "surname": "User",
+  "sex": "male",
+  "birth_date": "1990-01-01",
+  "address": "Via Roma 1",
+  "phone_number": "1234567890"
+}'
 
+curl -X POST http://localhost:8000/api/auth/login \
+-H "Content-Type: application/json" \
+-d '{
+  "email": "test@example.com",
+  "password": "yourpassword"
+}'
 -----------------------------------------------------------------------------------------------------------------
 TODO :  SCHEMA
 

@@ -14,7 +14,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./init_db:/docker-entrypoint-initdb.d # estensione vector
-  
+
   data_ingestion: 
     build:
       context: . 
@@ -61,14 +61,14 @@ services:
       build:
         context: ./frontend
         dockerfile: Dockerfile
-        args:
-          API_URL: http://localhost:8000
+        #args:
+        #  API_URL: http://localhost:8000
       ports: [ "8080:80" ]
       container_name: frontend
       depends_on: [ backend ]
       volumes: []
-      # environment:
-      #   - API_URL=http://backend:8000
+      environment:
+        - API_URL=http://backend:8000
 
 
 volumes:
