@@ -14,6 +14,11 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./init_db:/docker-entrypoint-initdb.d # estensione vector
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   data_ingestion: 
     build:
@@ -27,7 +32,8 @@ services:
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_PORT: ${POSTGRES_PORT}
     depends_on:
-      - db 
+      db: 
+        condition: service_healthy
 
   ollama:
       image: ollama/ollama

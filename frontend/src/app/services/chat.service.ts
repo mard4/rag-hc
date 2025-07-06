@@ -17,9 +17,13 @@ export interface QueryResponse {
   context_used: ContextDocument[];
 }
 
+export interface ExtendedQueryResponse extends QueryResponse {
+  suggestions: string[];
+}
+
 const API_URL =
   (typeof window !== 'undefined' && (window as any).env?.API_URL) ||
-  'http://backend:8000';   
+  'http://localhost:8000';   
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {

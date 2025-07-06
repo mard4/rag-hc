@@ -18,3 +18,4 @@ OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "llama3") # O mistral, gemma,
 
 # --- Configurazione RAG ---
 TOP_K_RESULTS = 5 # Numero di documenti da recuperare dal DB per il contesto
+CHAT_HISTORY_LIMIT = 5

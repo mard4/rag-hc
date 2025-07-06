@@ -7,58 +7,74 @@ import config as config
 from models import ContextDocument
 from connection import *
 
-def retrieve_relevant_data(query_embedding: List[float], top_k: int = config.TOP_K_RESULTS) -> List[ContextDocument]:
+from typing import List
+from db_utils import get_connection
+import config
+from models import ContextDocument
+
+def retrieve_relevant_data(
+    patient_id: int,
+    query_embedding: List[float],
+    top_k: int = config.TOP_K_RESULTS,
+    chat_k: int = config.CHAT_HISTORY_LIMIT
+) -> List[ContextDocument]:
     """
-    Recupera i dati più rilevanti sia dalla tabella 'medquad' che da 'mimic'
-    usando la similarità vettoriale e combinando i risultati.
+    Recupera:
+      1) i top_k documenti più simili da medquad (solo Q/A),
+      2) i top_k documenti più simili da mimic (context/Q/A),
+      3) gli ultimi chat_k messaggi dallo storico chat per il paziente.
+    Ritorna una lista di ContextDocument da usare come contesto RAG.
     """
     conn = None
-    all_relevant_docs_with_distance = []
+    all_relevant_docs = []
 
     try:
-        conn, cur = get_connection()  
+        conn, cur = get_connection()
 
-        # --- QUERY PER LA TABELLA MEDQUAD ---
-        # Recupera question, answer e la distanza per ordinare
-        # Per medquad, title e context saranno None o stringhe vuote
+        # --- 1) MedQuAD ---
         cur.execute(
-            "SELECT question, answer, question_embedding <-> %s::vector AS distance FROM medquad ORDER BY distance LIMIT %s;",
+            """
+            SELECT question, answer, question_embedding <-> %s::vector AS distance
+            FROM medquad
+            ORDER BY distance
+            LIMIT %s;
+            """,
             (query_embedding, top_k)
         )
-        medquad_results: List[Tuple[str, str, float]] = cur.fetchall() # (question, answer, distance)
+        for question, answer, _ in cur.fetchall():
+            all_relevant_docs.append(ContextDocument(question=question, answer=answer))
 
-        for q, a, dist in medquad_results:
-            all_relevant_docs_with_distance.append({
-                "distance": dist,
-                "document": ContextDocument(question=q, answer=a) # context saranno None per default
-            })
-
-        # --- QUERY PER LA TABELLA MIMIC ---
-        # Recupera title, context, question, answer e la distanza
+        # --- 2) MIMIC ---
         cur.execute(
-            "SELECT context, question, answer, question_embedding <-> %s::vector AS distance FROM mimic ORDER BY distance LIMIT %s;",
+            """
+            SELECT context, question, answer, question_embedding <-> %s::vector AS distance
+            FROM mimic
+            ORDER BY distance
+            LIMIT %s;
+            """,
             (query_embedding, top_k)
         )
-        mimic_results: List[Tuple[str, str, str, float]] = cur.fetchall() # (title, context, question, answer, distance)
-        
-        for c, q, a, dist in mimic_results:
-            all_relevant_docs_with_distance.append({
-                "distance": dist,
-                "document": ContextDocument(context=c, question=q, answer=a)
-            })
+        for context, question, answer, _ in cur.fetchall():
+            all_relevant_docs.append(ContextDocument(context=context, question=question, answer=answer))
 
-        ## combina results
-        all_relevant_docs_with_distance.sort(key=lambda x: x["distance"])
-        final_rel_docs= [item["document"] for item in all_relevant_docs_with_distance[:top_k]]
+        # --- 3) Cronologia chat ---
+        cur.execute(
+            """
+            SELECT message, answer
+            FROM chat
+            WHERE patient_id = %s
+            ORDER BY timestamp DESC
+            LIMIT %s;
+            """,
+            (patient_id, chat_k)
+        )
+        for message, answer in cur.fetchall():
+            all_relevant_docs.append(ContextDocument(question=message, answer=answer))
 
-        print(f"[{__name__}] Recuperati {len(final_rel_docs)} documenti totali dal Medquad+MIMIC.")
-        
-        return final_rel_docs
+        print(f"[{__name__}] Got {len(all_relevant_docs)} documents (medquad+mimic+chat).")
+        return all_relevant_docs
 
-
-    except Exception as e:
-        print(f"Errore nel recupero dati dal database: {e}")
-        return [] 
     finally:
         if conn:
             conn.close()
+
