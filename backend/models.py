@@ -1,5 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from typing import List, Dict,Optional
+from datetime import date
+from datetime import datetime
 
 ## =========== RAG ================== ##
 
@@ -18,7 +20,9 @@ class QueryResponse(BaseModel):
     answer: str # La risposta generata dall'LLM
     context_used: List[ContextDocument] # I documenti di contesto utilizzati per generare la risposta
 
-
+class ExtendedQueryResponse(QueryResponse):
+    suggestions: List[str]
+    
 ## =========== Login ================== ##
 
 class UserBase(BaseModel):
@@ -30,7 +34,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
     sex: str
-    birth_date: str 
+    birth_date: date 
     address: str
     phone_number: str
 
@@ -58,6 +62,42 @@ class PatientInDB(UserBase):
     id: int
     password_hash: str 
     sex: str
-    birth_date: str
+    birth_date: date   
     address: str
     phone_number: str
+
+# CRUD: bookings
+class BookingCreate(BaseModel):
+    doctor_id: int
+    patient_id: int
+    appointment_date: datetime
+    reason_for_visit: str
+
+class BookingOut(BookingCreate):
+    id: int
+    doctor_id: int
+    appointment_date: datetime
+    reason_for_visit: str
+    status: str
+    created_at: datetime
+
+# CRUD: doctors
+
+class DoctorOut(BaseModel):
+    id: int
+    name: str
+    surname: str
+    specialization: str
+    rating: float
+
+
+class AvailabilitySlot(BaseModel):
+    doctor_id: int
+    available_slots: List[datetime]
+
+# CRUD: chat
+class ChatMessage(BaseModel):
+    id: int
+    message: str
+    answer: str
+    timestamp: datetime

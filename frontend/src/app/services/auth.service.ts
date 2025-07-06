@@ -35,7 +35,7 @@ export class AuthService {
         }
       }
     }
-    if (isPlatformBrowser(this.platformId) && localStorage.getItem('jwtToken')) {
+    if (isPlatformBrowser(this.platformId) && localStorage.getItem('access_token')) {
       this.fetchProfile().subscribe();
     }
     this.currentUserSubject = new BehaviorSubject<User | null>(storedUser);

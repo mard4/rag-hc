@@ -14,6 +14,8 @@ def get_db():
         conn, cur = get_connection()
         #cur = conn.cursor()
         yield conn, cur
+    except HTTPException as e:
+        raise
     except Exception as e:
         if conn:
             conn.rollback()

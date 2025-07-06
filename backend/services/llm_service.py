@@ -55,25 +55,41 @@ class LLMService:
         if context_text:
             prompt_template = ChatPromptTemplate.from_messages(
                 [
-                    ("system", "Sei un assistente medico utile."
-                    " Basati solo sulle informazioni contestuali fornite per rispondere alla domanda."
-                    "SOLO Se le informazioni non contengono la risposta, "
-                    "devi dire educatamente ed in brevissimo (poche parole) che non hai informazioni sufficienti nel contesto fornito per rispondere."),
-                    ("user", "Informazioni contestuali:\n{context}\n\Question: {question}\n\Answer:"),
+                    ("system", 
+                    "Sei un assistente medico utile. Basati solo sulle informazioni contestuali fornite. "
+                    "Se le informazioni non contengono la risposta, rispondi brevemente che non hai dati sufficienti."),
+                    ("user", 
+                    "Informazioni contestuali:\n{context}\n\n"
+                    "Domanda: {question}\nRisposta:"),
                 ]
             )
         else:
             prompt_template = ChatPromptTemplate.from_messages(
                 [
-                    ("system", "Sei un assistente medico utile."
-                    " Non hai accesso a informazioni specifiche."
-                    " Rispondi alla domanda basandoti sulla tua conoscenza generale,"
-                    " ma brevemente in poche parole avvisa l'utente che la tua risposta potrebbe non essere basata su dati specifici e potresti non avere tutte le informazioni."),
-                    ("user", "{question}\n\Answer:"),
+                    ("system",
+                    "Sei un assistente medico utile. Non hai accesso a informazioni specifiche. "
+                    "Rispondi basandoti sulla tua conoscenza generale, ma avvisa brevemente l'utente che potresti non avere tutti i dati."),
+                    ("user", 
+                    "Domanda: {question}\nRisposta:"),
                 ]
             )
+
 
         # Crea la catena di esecuzione: prompt -> llm -> parser
         chain = prompt_template | llm | StrOutputParser()
         full_response = chain.invoke({"context": context_text, "question": user_query})
         return full_response
+    
+    @classmethod
+    def suggest_questions(cls, last_question: str, context_docs: List[ContextDocument]) -> List[str]:
+        llm = cls.get_llm_model()
+        prompt = (
+            "Sei un assistente medico. Sulla base delle informazioni fornite, "
+            "suggerisci 3 domande che l'utente potrebbe fare per chiarire o approfondire "
+            f"l'argomento: «{last_question}».\n\n"
+            "Rispondi con elenco puntato, italiano."
+        )
+        resp = llm.invoke(prompt) 
+        return [line.strip(" –• ") for line in resp.splitlines() if line.strip()]
+        #return resp.split("\n")  # parse in lista
+            

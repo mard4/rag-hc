@@ -17,6 +17,7 @@ curl -X POST "http://localhost:8000/ask" \
      -H "Content-Type: application/json" \
      -d '{"query": "What is keratoderma?"}'
 
+docker system prune -a --volumes -f
 
 ## frontend
 npx @angular/cli@17 new my-front --routing --style=scss

@@ -1,5 +1,6 @@
 # Backend
 
+
 ## RAG
 
 ### Contesto
@@ -31,8 +32,7 @@
 
 
 # TO-DO: 
-- Better prompt, adesso fa un casino della madonna
-- API rest per tutte le operazioni di CRUD su pazienti, dottori, appuntamenti, chat
-- API to save chat history and stuff
+- Fix API to save chat history and recommendating questions
+- Better prompt
 - Ricevuta la risposta, adattarla al contesto e mostrare dottori liberi, appuntamenti
 
