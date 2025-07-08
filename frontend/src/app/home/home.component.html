@@ -1,12 +1,42 @@
 <div class="home-container" *ngIf="user$ | async as user">
-  <h1>Welcome {{ user.name }}!!
-  <img src="assets/heartbeat.png" width="10%;" />
+  <h1>Benvenuto: {{ user.name }}!!
+    <img src="assets/heartbeat.png" width="10%;" alt="Heartbeat icon" />
   </h1>
-  <p>Are you looking to book an appointment, ask a question or?</p>
-  <p>Feel free to use the chat below to ask our assistant anything you like!</p>
-</div>
+  <p>Vuoi prenotare un appuntamento, vedere i medici disponibili o fare una domanda?</p>
+  <p>Per qualsiasi dubbio, utilizza la chat qui sottostante!</p>
 
-  <div class="chat-section">
-    <h2>Chat with assistant</h2>
+  <hr> <div class="chat-section">
     <app-chat></app-chat>
   </div>
+
+  <hr> <div class="toggle-buttons-group">
+    <button (click)="toggleChatHistory()" class="toggle-history-button">
+      {{ showHistory ? 'Nascondi Storico Chat' : 'Mostra Storico Chat' }}
+    </button>
+    <button (click)="toggleBookings()" class="toggle-bookings-button">
+      {{ showBookings ? 'Nascondi Appuntamenti' : 'Mostra Appuntamenti' }}
+    </button>
+  </div>
+
+  <div *ngIf="showHistory" class="chat-history-display">
+    <h3>Storico Chat Paziente</h3>
+    <p *ngIf="patientChatHistory.length === 0 && !loading">Nessuna conversazione precedente.</p>
+    <p *ngIf="loading">Caricamento storico...</p>
+    <div *ngFor="let entry of patientChatHistory" class="history-entry">
+      <div class="history-question">
+        <strong>Domanda:</strong> {{ entry.message }}
+      </div>
+      <div class="history-answer">
+        <strong>Risposta:</strong> {{ entry.answer }}
+      </div>
+      <div class="history-timestamp">
+        {{ entry.timestamp | date:'short' }}
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showBookings" class="bookings-display">
+    <h3>I Tuoi Appuntamenti</h3>
+    <app-bookings></app-bookings>
+  </div>
+</div>

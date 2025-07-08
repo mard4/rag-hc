@@ -67,13 +67,9 @@ def create_tables(cur,conn, query_patients, query_doctors, query_bookings, query
         print(f"Error creating tables {e}")
         conn.rollback()
 
-#### === popolate tables with some data === ####
+#### === Doctors === ####
 def populate_tables(cur, conn):
     patients = [
-        ("Alice", "Rossi", "female", "1985-04-12", "Via Milano 1", "3310000001", "alice.rossi@example.com", "hash_pw1"),
-        ("Bruno", "Bianchi", "male",   "1978-09-23", "Via Torino 2",  "3310000002", "bruno.bianchi@example.com", "hash_pw2"),
-        ("Carla", "Verdi",  "female", "1992-12-05", "Via Napoli 3",  "3310000003", "carla.verdi@example.com",  "hash_pw3"),
-        ("Diego", "Neri",   "male",   "1980-02-17", "Via Firenze 4", "3310000004", "diego.neri@example.com",   "hash_pw4"),
         ("Tung", "Sahur", "male", "2007-07-07", "Via Ballerina Cappuccina 5",    "3310000005", "tung@tung.com", "tung"),
     ]
     for name, surname, sex, birth, addr, phone, email, plain_pw in patients:
@@ -89,12 +85,9 @@ def populate_tables(cur, conn):
     conn.commit()
 
     doctors = [
-        ("Fabio",   "Russo",   "male",   "1970-03-10", "Corso Venezia 10", "3390000001", "fabio.russo@clinic.com",   "Cardiology",    15, 4.7),
-        ("Giulia",  "Ferrari", "female", "1982-11-22", "Piazza Duomo 20",   "3390000002", "giulia.ferrari@clinic.com", "Dermatology",   10, 4.3),
-        ("Luca",    "Romano",  "male",   "1975-06-15", "Via Po 30",         "3390000003", "luca.romano@clinic.com",    "Neurology",     12, 4.5),
-        ("Marina",  "Greco",   "female", "1988-01-05", "Via Larga 40",      "3390000004", "marina.greco@clinic.com",   "Pediatrics",    8,  4.9),
-        ("Stefano", "Fontana", "male",   "1969-08-28", "Via Manzoni 50",    "3390000005", "stefano.fontana@clinic.com","Orthopedics",   20, 4.2),
-    ]
+        ("Mary",  "Mani", "female", "1982-11-22", "Via Duomo 2",   "3390000002", "mar.d@clinic.com", "Dermatology",   10, 4.3),
+        ("Kekko",    "Sa",  "male",   "1975-06-15", "Via Po 3",         "3390000003", "k.sa@clinic.com",    "Neurology",     12, 4.5),
+        ("Anna",  "Pepe",   "female", "1988-01-05", "Via Larga 4",      "3390000004", "a.pe@clinic.com",   "Pediatrics",    8,  4.9),    ]
     for d in doctors:
         cur.execute("""
             INSERT INTO doctors
@@ -104,45 +97,6 @@ def populate_tables(cur, conn):
         """, d)
 
     conn.commit()
-
-    # Preleva gli id appena inseriti
-    cur.execute("SELECT id FROM patients ORDER BY id LIMIT 5;")
-    patient_ids = [row[0] for row in cur.fetchall()]
-    cur.execute("SELECT id FROM doctors ORDER BY id LIMIT 5;")
-    doctor_ids  = [row[0] for row in cur.fetchall()]
-
-    # appuntamenti (bookings)
-    for i in range(5):
-        pid = random.choice(patient_ids)
-        did = random.choice(doctor_ids)
-        appt = datetime.now() + timedelta(days=random.randint(1, 30))
-        reason = f"Visita di controllo #{i+1}"
-        cur.execute("""
-            INSERT INTO bookings
-              (patient_id, doctor_id, appointment_date, reason_for_visit)
-            VALUES (%s,%s,%s,%s)
-            ON CONFLICT DO NOTHING;
-        """, (pid, did, appt, reason))
-
-    conn.commit()
-
-    # 5 messaggi di chat
-    for i in range(5):
-        pid = random.choice(patient_ids)
-        did = random.choice(doctor_ids)
-        msg = f"Domanda di prova #{i+1}?"
-        ans = f"Risposta di esempio #{i+1}."
-        ts  = datetime.now() - timedelta(hours=random.randint(1, 72))
-        cur.execute("""
-            INSERT INTO chat
-              (patient_id, doctor_id, message, answer, timestamp)
-            VALUES (%s,%s,%s,%s,%s)
-            ON CONFLICT DO NOTHING;
-        """, (pid, did, msg, ans, ts))
-
-    conn.commit()
-    print("Tabelle popolate con dati di esempio.")
-#### === popolate tables with some data === ####
 
 ### === 
 if __name__ == "__main__":

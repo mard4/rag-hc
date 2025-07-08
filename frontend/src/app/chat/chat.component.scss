@@ -1,57 +1,273 @@
-.chat-container {
-    max-width: 600px;
-    margin: 2rem auto;
+.chat-box {
+  max-height: 300px;
+  overflow-y: auto;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+
+  .user, .assistant {
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    .avatar {
+      img {
+        width: 60px; 
+        height: 60px;
+        /*border-radius: 50%; */
+        /*object-fit: cover; */
+      }
+    }
+    .text {
+      padding: 8px 12px;
+      border-radius: 15px; /* Default for all, overridden below */
+      max-width: 80%;
+      word-wrap: break-word; /* Ensure long words wrap */
+    }
+  }
+
+  .user {
+    justify-content: flex-end;
+    .avatar {
+      order: 2;
+      margin-left: 10px;
+    }
+    .text {
+      order: 1;
+      background-color: #e0f2f7; /* Light blue for user messages */
+      border-radius: 15px 15px 0 15px; /* Rounded corners: top-left, top-right, bottom-left, bottom-right */
+    }
+  }
+
+  .assistant {
+    justify-content: flex-start;
+    .avatar {
+      order: 1;
+      margin-right: 10px;
+    }
+    .text {
+      order: 2;
+      background-color: #d4edda; /* Light green for assistant messages */
+      border-radius: 15px 15px 15px 0;
+    }
+  }
+}
+
+.suggestions-box {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  h3 {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+  .suggestions-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+  .suggestion-button {
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    
+    &:hover {
+      background-color: #e0e0e0;
+      border-color: #bbb;
+    }
+  }
+}
+
+.input-box {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 15px;
+  background-color: #f2f2f2;
+  border-top: 1px solid #ddd;
+  border-radius: 0 0 12px 12px; /* Rounded bottom corners */
+
+  input {
+    flex-grow: 1;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    font-size: 1em;
+    outline: none;
+    transition: border-color 0.3s;
+
+    &:focus {
+      border-color: #007bff;
+    }
+  }
+
+  button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    background-color: #007bff;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+
+  .find-doctor-button {
+    background-color: #28a745; /* Green for distinction */
+    font-weight: bold;
+    white-space: nowrap;
+    padding: 12px 25px; /* Larger button */
+
+    &:hover {
+      background-color: #218838;
+    }
+  }
+}
+
+/* Doctor Recommendation Section (part of chat interaction) */
+.doctor-recommendation-section {
+  margin-top: 1.5rem;
+  padding: 1.2rem;
+  background-color: #e6f7ff;
+  border-radius: 10px;
+  border: 1px solid #a0d9ff;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  h3 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #1a5c92;
+    font-size: 1.2em;
+  }
+
+  .doctors-list {
+    margin-top: 1rem;
+    background-color: #ffffff;
     padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 12px;
-    box-shadow: 0 0 10px #ccc;
-  
-    h2 {
-      text-align: center;
-      margin-bottom: 1rem;
+    border-radius: 8px;
+    border: 1px solid #e0f0ff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    margin-bottom: 15px;
+  }
+
+  .doctor-card {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.8rem;
+    margin-bottom: 0.8rem;
+    &:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
     }
-  
-    .chat-box {
-      max-height: 300px;
-      overflow-y: auto;
-      background: white;
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      border: 1px solid #ddd;
-  
-      .user {
-        text-align: right;
-        color: #333;
-        margin: 0.5rem 0;
-      }
-  
-      .assistant {
-        text-align: left;
-        color: #0c5460;
-        margin: 0.5rem 0;
-      }
+    p {
+      margin: 0.2rem 0;
+      font-size: 0.9em;
     }
-  
-    .input-box {
-      display: flex;
-      gap: 0.5rem;
-  
-      input {
-        flex: 1;
-        padding: 0.5rem;
-        border-radius: 8px;
-        border: 1px solid #aaa;
-      }
-  
-      button {
-        padding: 0.5rem 1rem;
-        border: none;
-        background: #007bff;
-        color: white;
-        border-radius: 8px;
-        cursor: pointer;
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.85em;
+      transition: background-color 0.3s ease;
+      &:hover {
+        background-color: #0056b3;
       }
     }
   }
-  
+}
+
+/* Doctor Availability Section (part of chat interaction) */
+.doctor-availability {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+  h4 {
+    color: #007bff;
+    margin-bottom: 15px;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: #343a40;
+    }
+    input {
+      width: calc(100% - 20px);
+      padding: 0.8rem 10px;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+      font-size: 1em;
+      &:focus {
+        outline: none;
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+      }
+    }
+  }
+
+  .slots-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .slot-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-align: center;
+
+    &:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+    }
+  }
+
+  .back-button {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    display: block;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+
+    &:hover {
+      background-color: #5a6268;
+    }
+  }
+}

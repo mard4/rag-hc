@@ -19,7 +19,7 @@ router = APIRouter(
     tags=["Authentication"]
 )
 
-# --- Funzioni di Utilità per Hashing 
+# Funzioni di Utilità per Hashing 
 def get_password_hash(password: str) -> str:
     hashed_password = hashpw(password.encode('utf-8'), gensalt())
     return hashed_password.decode('utf-8')
@@ -27,7 +27,7 @@ def get_password_hash(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
-# --- Endpoint di Autenticazione
+# Endpoint di Autenticazione
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register_patient(user: UserCreate, db_conn_cur: tuple = Depends(get_db)):

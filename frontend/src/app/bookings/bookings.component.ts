@@ -1,102 +1,125 @@
-// src/app/bookings/bookings.component.ts
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common'; 
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { BookingService } from '../services/booking.service';
-import { Booking } from '../models/booking.model';
-import { Doctor } from '../models/doctor.model';
-// import { Patient } from '../models/patient.model'; // You might not need to import Patient here if only used in service
+import { BookingOut, BookingIn } from '../models/booking.model'; 
+import { DoctorOut } from '../models/doctor.model'; 
 
 @Component({
   selector: 'app-bookings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DatePipe], 
   templateUrl: './bookings.component.html',
-  styleUrls: ['./bookings.component.scss']
+  styleUrls: ['./bookings.component.scss'],
+  providers: [DatePipe] 
 })
 export class BookingsComponent implements OnInit {
-  bookings: Booking[] = [];
-  doctors: Doctor[] = [];
-  filteredBookings: Booking[] = [];
+  doctors: DoctorOut[] = []; 
+  allBookings: BookingOut[] = []; 
+  filteredBookings: BookingOut[] = []; 
 
-  selectedDoctorId: string = 'all';
-  selectedDate: string = '';
+  selectedDoctorId: number | 'all' = 'all'; 
+  selectedDate: string = ''; // 'YYYY-MM-DD' for input type="date"
 
+  loading: boolean = false;
+  
+  // Properties for the booking form (TO DO)
   showBookingForm: boolean = false;
-  bookingToEdit: Booking | null = null;
+  bookingToEdit: BookingOut | null = null; 
 
-  constructor(private bookingService: BookingService) { }
+  constructor(private bookingService: BookingService, private datePipe: DatePipe) {} 
 
   ngOnInit(): void {
-    // FIX: Add explicit type for 'doctors' parameter
-    this.bookingService.getDoctors().subscribe((doctors: Doctor[]) => {
-      this.doctors = doctors;
-    });
+    this.loadDoctors();
+    this.loadBookings();
+  }
 
-    // FIX: Add explicit type for 'bookings' parameter
-    this.bookingService.getBookings().subscribe((bookings: Booking[]) => {
-      this.bookings = bookings;
-      this.applyFilters();
+  loadDoctors(): void {
+    this.bookingService.getDoctors().subscribe({
+      next: (doctors: DoctorOut[]) => {
+        this.doctors = doctors;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error fetching doctors:', err);
+        // Optionally, show an error message to the user
+      }
+    });
+  }
+
+  loadBookings(): void {
+    this.loading = true;
+    this.bookingService.getPatientBookings().subscribe({
+      next: (bookings: BookingOut[]) => {
+        this.allBookings = bookings;
+        this.applyFilters(); 
+        this.loading = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error fetching patient bookings:', err);
+        this.loading = false;
+        // Optionally, show an error message to the user
+      }
     });
   }
 
   applyFilters(): void {
-    let tempBookings = [...this.bookings];
+    let tempBookings: BookingOut[] = [...this.allBookings]; // Start with all bookings
 
+    // Filter by doctor
     if (this.selectedDoctorId !== 'all') {
-      // Ensure type consistency if doctorId is 'string' in your models
-      tempBookings = tempBookings.filter(b => b.doctorId === this.selectedDoctorId);
+      tempBookings = tempBookings.filter(b => b.doctor_id === this.selectedDoctorId);
     }
 
+    // Filter by date
     if (this.selectedDate) {
       const filterDate = new Date(this.selectedDate);
-      tempBookings = tempBookings.filter(b =>
-        b.startTime.getFullYear() === filterDate.getFullYear() &&
-        b.startTime.getMonth() === filterDate.getMonth() &&
-        b.startTime.getDate() === filterDate.getDate()
-      );
+      tempBookings = tempBookings.filter(b => {
+        const bookingDate = new Date(b.appointment_date); // Convert booking date string to Date object
+        return bookingDate.getFullYear() === filterDate.getFullYear() &&
+               bookingDate.getMonth() === filterDate.getMonth() &&
+               bookingDate.getDate() === filterDate.getDate();
+      });
     }
 
-    this.filteredBookings = tempBookings.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+    // Sort by appointment date
+    this.filteredBookings = tempBookings.sort((a, b) => 
+      new Date(a.appointment_date).getTime() - new Date(b.appointment_date).getTime()
+    );
   }
 
+  // Helper to format date for display in the template
+  formatSlotDate(dateString: string): string {
+    return this.datePipe.transform(dateString, 'mediumDate') + ' alle ' + this.datePipe.transform(dateString, 'shortTime');
+  }
+
+  // --- CRUD Actions  ---
   onAddBooking(): void {
     this.bookingToEdit = null;
     this.showBookingForm = true;
-    console.log('Aggiungi nuovo booking');
+    console.log('TODO Open form to add new booking');
+    // Implement logic to open a modal/form for adding a new booking
   }
 
-  onEditBooking(booking: Booking): void {
-    this.bookingToEdit = { ...booking };
+  onEditBooking(booking: BookingOut): void { 
+    this.bookingToEdit = { ...booking }; 
     this.showBookingForm = true;
-    console.log('Modifica booking:', booking);
+    console.log('TODO Open form to edit booking:', booking);
+    // Implement logic to open a modal/form pre-filled with booking data
   }
 
-  onDeleteBooking(id: string): void {
-    if (confirm('Sei sicuro di voler eliminare questo booking?')) {
-      // FIX: Add explicit type for 'success' parameter
-      this.bookingService.deleteBooking(id).subscribe((success: boolean) => { // Assuming deleteBooking returns Observable<boolean>
-        if (success) {
-          console.log('Booking eliminato con successo!');
-          // Re-fetch bookings after deletion
-          // FIX: Add explicit type for 'bookings' parameter
-          this.bookingService.getBookings().subscribe((bookings: Booking[]) => {
-            this.bookings = bookings;
-            this.applyFilters();
-          });
-        } else {
-          console.error('Errore nell\'eliminazione del booking.');
-        }
-      }, (error: any) => { // Good to explicitly type error too
-        console.error('Errore durante la chiamata di eliminazione:', error);
-      });
+  onDeleteBooking(bookingId: number): void { // Use number for ID
+    if (confirm('Sei sicuro di voler eliminare questo appuntamento?')) {
+      console.log('Deleting booking with ID:', bookingId);
+      this.allBookings = this.allBookings.filter(b => b.id !== bookingId);
+      this.applyFilters();
     }
   }
 
   getStatusClass(status: string): string {
-    switch (status) {
-      case 'confirmed': return 'status-confirmed';
+    switch (status.toLowerCase()) { 
+      case 'scheduled': return 'status-scheduled'; 
       case 'pending': return 'status-pending';
       case 'cancelled': return 'status-cancelled';
       case 'completed': return 'status-completed';

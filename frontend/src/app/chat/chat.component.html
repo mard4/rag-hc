@@ -1,20 +1,82 @@
 <section class="chat-container">
-    <h2>Virtual Assistant</h2>
+  <h2>Virtual Assistant</h2>
 
-    <div class="chat-box">
-        <div *ngFor="let msg of chatHistory" [class]="msg.role">
-          <span class="avatar">
-            <img *ngIf="msg.role === 'user'" src="assets/TUNG.png" width="10%;" alt="User" />
-            <img *ngIf="msg.role === 'assistant'" src="assets/BALLERINA.png" width="10%;" alt="Assistant" />
-          </span>
-          <span class="text">{{ msg.text }}</span>
-        </div>
+  <div class="chat-box">
+    <div *ngFor="let msg of chatHistory" [class]="msg.role">
+      <span class="avatar">
+        <img *ngIf="msg.role === 'user'" src="assets/TUNG.png" width="10%;" alt="User" />
+        <img *ngIf="msg.role === 'assistant'" src="assets/TUNG_DOC.png" width="14%;" alt="Assistant" />
+      </span>
+      <span class="text">{{ msg.text }}</span>
+    </div>
+  </div>
+
+  <div *ngIf="suggestions.length > 0 && !loading" class="suggestions-box">
+    <h3>Potrebbe interessarti anche:</h3>
+    <div class="suggestions-list">
+      <ng-container *ngFor="let suggestion of suggestions">
+        <button *ngIf="suggestion.type === 'question'"
+                (click)="sendSuggestedQuestion(suggestion.value)"
+                class="suggestion-button">
+          {{ suggestion.value }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+
+  <form (submit)="sendMessage(); $event.preventDefault()" class="input-box">
+    <input [(ngModel)]="userInput" name="input" placeholder="Questions?" />
+    <button type="submit">Send</button>
+    <button type="button" 
+            (click)="handleDoctorRecommendation()" 
+            class="find-doctor-button">
+      Trovami un medico
+    </button>
+  </form>
+
+  <hr>
+
+  <div *ngIf="showDoctorRecommendation" class="doctor-recommendation-section">
+    <h3>Trova il Medico Adatto</h3>
+    <p *ngIf="recommendedProblemType">**Ricerca per:** {{ recommendedProblemType }}</p>
+
+    <div *ngIf="loading">Caricamento medici disponibili...</div>
+
+    <div *ngIf="!loading && availableDoctors.length > 0" class="doctors-list">
+      <h4>Medici Disponibili:</h4>
+      <div *ngFor="let doctor of availableDoctors" class="doctor-card">
+        <p><strong>Dr. {{ doctor.name }} {{ doctor.surname }}</strong> ({{ doctor.specialization }})</p>
+        <p>Esperienza: {{ doctor.experience_years }} anni, Rating: {{ doctor.rating }} ⭐</p>
+        <button (click)="selectDoctor(doctor)">Vedi Disponibilità</button>
       </div>
+    </div>
+    <div *ngIf="!loading && availableDoctors.length === 0">
+      <p>Nessun medico trovato per la tua richiesta. Prova a riformulare.</p>
+    </div>
+
+    <div *ngIf="showAvailability && selectedDoctor" class="doctor-availability">
+      <h4>Disponibilità del Dr. {{ selectedDoctor.surname }}:</h4> 
       
+      <div class="form-group">
+        <label for="reasonForVisit">Motivo della visita (opzionale):</label>
+        <input id="reasonForVisit" [(ngModel)]="reasonForVisit" placeholder="Es. Controllo annuale, dolore al ginocchio">
+      </div>
+
+      <p *ngIf="loading">Caricamento slot disponibili...</p>
+      <div *ngIf="!loading && doctorAvailability && doctorAvailability.available_slots.length > 0" class="slots-list">
+        <button *ngFor="let slot of doctorAvailability.available_slots"
+                (click)="bookSelectedSlot(slot)"
+                class="slot-button">
+          {{ formatSlotDate(slot) }}
+        </button>
+      </div>
+      <div *ngIf="!loading && (!doctorAvailability || doctorAvailability.available_slots.length === 0)">
+        <p>Nessun slot disponibile per il Dr. {{ selectedDoctor.surname }} al momento.</p> 
+      </div>
+      <button (click)="resetDoctorRecommendation()" class="back-button">Indietro / Annulla</button>
+    </div>
+  </div> 
   
-    <form (submit)="sendMessage(); $event.preventDefault()" class="input-box">
-      <input [(ngModel)]="userInput" name="input" placeholder="Questions?" />
-      <button type="submit">Send</button>
-    </form>
+  
+  
   </section>
-  

@@ -20,18 +20,18 @@ class TokenData(BaseModel):
     user_id: int
     role: str
 
-# --- Funzione per creare il token di accesso ---
+# Funzione per creare il token di accesso 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-# --- Dipendenza per ottenere l'utente corrente da un token JWT ---
+# Dipendenza per ottenere l'utente corrente da un token JWT
 async def get_current_user(token: str = Depends(oauth2_scheme), db_conn_cur: tuple = Depends(get_db)) -> PatientInDB:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

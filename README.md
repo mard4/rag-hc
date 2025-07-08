@@ -1,88 +1,60 @@
-# rag-hc
-
-source venv/bin/activate 
+# Healthcare Virtual Assistant 
 
 ### Start project
-docker compose up -d
-docker exec -it ollama ollama pull llama3
+`docker compose up -d`
+`docker exec -it ollama ollama pull phi3:mini`
 
-docker exec -it postgres_dbvector  psql -U user -d db
-\d medquad
-SELECT COUNT(*) FROM medquad;
-SELECT question, SUBSTRING(answer, 1, 50) || '...' as answer_preview, question_embedding FROM medquad LIMIT 5;
+Pre-requisiti: Docker
+Progetto sviluppato su Ubuntu 22.04 LTS
 
---------------------------------------------------------------------------------------
-backend
-curl -X POST "http://localhost:8000/ask" \
-     -H "Content-Type: application/json" \
-     -d '{"query": "What is keratoderma?"}'
+## Descrizione
 
-docker system prune -a --volumes -f
+Sviluppo di un assistente virtuale per il settore sanitario. L'obiettivo è creare un sistema che possa:
+  - rispondere a domande complesse dei pazienti
+  - Fornire consigli medici di base
+  - Gestire gli appuntamenti
+  - Comprendere e generare risposte contestuali in modo accurato e naturale
 
-## frontend
-npx @angular/cli@17 new my-front --routing --style=scss
-
-## llama
-docker exec -it ollama ollama pull llama3
-
-## check backend login e register
-curl -X POST http://localhost:8000/api/auth/register \
--H "Content-Type: application/json" \
--d '{
-  "email": "test@example.com",
-  "password": "yourpassword",
-  "name": "Test",
-  "surname": "User",
-  "sex": "male",
-  "birth_date": "1990-01-01",
-  "address": "Via Roma 1",
-  "phone_number": "1234567890"
-}'
-
-curl -X POST http://localhost:8000/api/auth/login \
--H "Content-Type: application/json" \
--d '{
-  "email": "test@example.com",
-  "password": "yourpassword"
-}'
------------------------------------------------------------------------------------------------------------------
-TODO :  SCHEMA
-
-
-
-challenge consiste nello sviluppare un assistente virtuale per il settore sanitario. L'obiettivo è creare un sistema che possa:
--rispondere a domande complesse dei pazienti
--Fornire consigli medici di base
--Gestire gli appuntamenti
--Comprendere e generare risposte contestuali in modo accurato e naturale
 Componenti
 1. Database
-- Relazionale/NoSQL: per informazioni su pazienti, medici, appuntamenti e chat (a scelta: MySQL, MongoDB, PostgreSQL, ecc.)
--Database vettoriale: per la memorizzazione degli embeddings del sistema RAG
+- Relazionale/NoSQL: per informazioni su pazienti, medici, appuntamenti e chat (PostgreSQL)
+-Database vettoriale: per la memorizzazione degli embeddings del sistema RAG (DbVector)
 2. Backend
-- Da implementare con Node.js, Django, Flask o Ruby on Rails
-- Deve esporre API REST per tutte le operazioni CRUD su pazienti, medici, appuntamenti e chat
+- FastAPI
+- Espone API REST per tutte le operazioni CRUD su pazienti, medici, appuntamenti e chat
 3. Frontend
--Sviluppato in HTML/CSS/JavaScript o framework (React, Angular, Vue.js)
--Deve permettere il dialogo con l'assistente, la visualizzazione delle risposte, la gestione degli appuntamenti e la consultazione dello storico chat
-Funzionalità richieste
-Priorità alta
+- Sviluppato in Angular17
+- Permette il dialogo con l'assistente, la visualizzazione delle risposte, la gestione degli appuntamenti e la consultazione dello storico chat
+
+Funzionalità principali
+
 - Gestione chat: interazione tramite chat con RAG per risposte contestuali (utilizzo dei dataset MedQuAD e MIMIC-III in sinergia)
 - Sistema RAG: risposte accurate grazie ai due dataset
 - Raccomandazione medico: suggerimento del medico più adatto una volta compresa la necessità del cliente
-- Proposta slot liberi: mostrare disponibilità dei medici e prenotazione appuntamenti
-Priorità media
-- Upload foto diagnosi/analisi: possibilità di caricare immagini diagnostiche o analisi
+- Proposta slot liberi: mostrare disponibilità dei medici e prenotazione 
 - Visualizzazione prenotazioni: elenco delle proprie prenotazioni
 - Storico chat: accesso alle conversazioni passate
-Priorità bassa (facoltativo)
 - Login/registrazione utente
-- Modifica/cancellazione prenotazioni
-- Interfaccia lato medico: visualizzazione pazienti/prenotazioni
-- Pagina preview medico: dettaglio problema paziente e chat precedente
-Le funzionalità a priorità bassa sono opzionali: implementale solo dopo aver completato le funzionalità principali (CRUD).
-Requisito obbligatorio
-Integra almeno un'altra funzionalità di Al a tua scelta, rilevante per questo caso d'uso.
-Consegna
-- Quando hai completato la challenge, carica tutto su una repository Git (GitHub/GitLab) e condividi il link.
-- Deadline: una settimana da oggi.
+
+
+## Struttura
+
+![alt text](imgs/readme_img.png)
+
+- `docker-compose.yml`: file di configurazione per avviare i servizi
+- `backend/`: codice sorgente del backend in FastAPI
+- `frontend/`: codice sorgente del frontend in Angular
+- `data_ingestion/`: script per la creazione del database e l'inizializzazione dei dati
+
+## Come usarlo
+- app in: http://localhost:8080/
+- api in: http://localhost:8000/docs#/
+- fare il login con tung@tung.com e password: tung
+
+## Screenshot
+
+![alt text](imgs/storico.png)
+
+![alt text](imgs/appnt.png)
+
+![alt text](imgs/appnt2.png)
