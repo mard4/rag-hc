@@ -1,32 +1,42 @@
-# Healthcare Virtual Assistant 
+# Healthcare Virtual Assistant  <img src="frontend/src/assets/heartbeat.png" alt="alt text" width="40" />
 
-### Start project
-`docker compose up -d`
-`docker exec -it ollama ollama pull phi3:mini`
+
+### Per avviare il progetto
 
 Pre-requisiti: Docker
-Progetto sviluppato su Ubuntu 22.04 LTS
+
+```
+docker compose up --build -d
+docker exec -it ollama ollama pull phi3:mini
+```
+
+![alt text](./imgs/all.gif)
+
+<i>Progetto sviluppato su Ubuntu 22.04 LTS</i>
 
 ## Descrizione
 
-Sviluppo di un assistente virtuale per il settore sanitario. L'obiettivo è creare un sistema che possa:
-  - rispondere a domande complesse dei pazienti
+Sviluppo di un assistente virtuale per il settore sanitario, in grado di
+  - Rispondere a domande complesse dei pazienti
   - Fornire consigli medici di base
   - Gestire gli appuntamenti
   - Comprendere e generare risposte contestuali in modo accurato e naturale
 
-Componenti
-1. Database
-- Relazionale/NoSQL: per informazioni su pazienti, medici, appuntamenti e chat (PostgreSQL)
--Database vettoriale: per la memorizzazione degli embeddings del sistema RAG (DbVector)
-2. Backend
-- FastAPI
+## Componenti
+
+<b>Database</b>
+- Relazionale: per informazioni su pazienti, medici, appuntamenti e chat (PostgreSQL)
+- Database vettoriale: per la memorizzazione degli embeddings del sistema RAG (pgvector)
+
+<b>Backend</b>
+- Sviluppato in FastAPI
 - Espone API REST per tutte le operazioni CRUD su pazienti, medici, appuntamenti e chat
-3. Frontend
+
+<b>Frontend</b>
 - Sviluppato in Angular17
 - Permette il dialogo con l'assistente, la visualizzazione delle risposte, la gestione degli appuntamenti e la consultazione dello storico chat
 
-Funzionalità principali
+## Funzionalità integrate
 
 - Gestione chat: interazione tramite chat con RAG per risposte contestuali (utilizzo dei dataset MedQuAD e MIMIC-III in sinergia)
 - Sistema RAG: risposte accurate grazie ai due dataset
@@ -35,6 +45,12 @@ Funzionalità principali
 - Visualizzazione prenotazioni: elenco delle proprie prenotazioni
 - Storico chat: accesso alle conversazioni passate
 - Login/registrazione utente
+
+- Oltre alla risposta alla domanda sono stati implementati dei suggerimenti in chat (domande collegate alla domanda precedente dell'utente) 
+
+- Intent detection: il sistema è in grado di riconoscere l'intento dell'utente (es. prenotazione, consultazione storico, ecc.) e rispondere di conseguenza
+
+- Placeholders TODO: modifica appuntamento / cancellazione appuntamento / modifica password
 
 
 ## Struttura
@@ -46,15 +62,15 @@ Funzionalità principali
 - `frontend/`: codice sorgente del frontend in Angular
 - `data_ingestion/`: script per la creazione del database e l'inizializzazione dei dati
 
-## Come usarlo
-- app in: http://localhost:8080/
-- api in: http://localhost:8000/docs#/
-- fare il login con tung@tung.com e password: tung
+## Visualizzazione
+- API endpoints UI : http://localhost:8000/docs#/
+- WebApp: http://localhost:8080/
+- fare Login con tung@tung.com e password: tung
 
 ## Screenshot
 
-![alt text](imgs/storico.png)
-
-![alt text](imgs/appnt.png)
-
-![alt text](imgs/appnt2.png)
+<div style="display: flex; justify-content: space-between; gap: 10px;">
+  <img src="imgs/storico.png" alt="storico" style="width: 30%;" />
+  <img src="imgs/appnt.png" alt="appuntamento" style="width: 30%;" />
+  <img src="imgs/appnt2.png" alt="appuntamento 2" style="width: 30%;" />
+</div>
