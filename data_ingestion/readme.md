@@ -4,7 +4,7 @@
 
 ### Contesto
 Ingestione dei Dataset in database (Postgres+PgVector)
-![](readmeimg.png)
+![](../imgs/data_ing.png)
 
 ## Data
 - MedQuAD: dataset di domande e risposte mediche, utile per rispondere a domande dirette basate su informazioni cliniche.

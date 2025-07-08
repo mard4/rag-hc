@@ -2,7 +2,7 @@
 
 Espone API per CRUD operations e per la generazione di risposte contestuali tramite Retrieval Augmented Generation (RAG)
 
-![alt text](readmeimg.png)
+![alt text](../imgs/backend.png)
 ## Consultation & Management (CRUD - Gestione Appuntamenti)
 Espone API REST per la consultazione e gestione di:
 
@@ -35,6 +35,8 @@ Espone API REST per la consultazione e gestione di:
    - Genera:
      - Una <b>risposta</b> basata sul contesto
      - <b>Suggerimenti</b> di follow-up (domande simili)
+    - Classifica il sentimento della domanda tramite <b>Sentiment Analysis</b> per determinare il tono della risposta e il tipo di risposta da generare 
+    - Restituisce la risposta e i suggerimenti al frontend
 
 ## Struttura Progetto
 
