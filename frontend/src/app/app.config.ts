@@ -7,5 +7,8 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { authInterceptor } from './interceptors/auth.interceptors'; // Ensure this path is correct too!
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideClientHydration(), provideHttpClient(),provideHttpClient(withInterceptors([authInterceptor]))]
+  providers: [provideRouter(routes),
+    provideClientHydration(),
+    //provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor]))]
 };

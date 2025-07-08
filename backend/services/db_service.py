@@ -9,7 +9,6 @@ from connection import *
 
 from typing import List
 from db_utils import get_connection
-import config
 from models import ContextDocument
 
 def retrieve_relevant_data(
@@ -60,16 +59,30 @@ def retrieve_relevant_data(
         # --- 3) Cronologia chat ---
         cur.execute(
             """
-            SELECT message, answer
-            FROM chat
-            WHERE patient_id = %s
-            ORDER BY timestamp DESC
-            LIMIT %s;
+            SELECT COUNT(*) FROM chat
+            WHERE patient_id = %s;
             """,
-            (patient_id, chat_k)
+            (patient_id,)
         )
-        for message, answer in cur.fetchall():
-            all_relevant_docs.append(ContextDocument(question=message, answer=answer))
+        total_chat_messages = cur.fetchone()[0]
+        print(f"[DEBUG] Total chat messages for patient {patient_id}: {total_chat_messages}")
+
+        if total_chat_messages >= config.MIN_TOTAL_CHAT_MESSAGES_FOR_HISTORY and config.CHAT_HISTORY_LIMIT > 0:
+            cur.execute(
+                """
+                SELECT message, answer
+                FROM chat
+                WHERE patient_id = %s
+                ORDER BY timestamp DESC
+                LIMIT %s;
+                """,
+                (patient_id, chat_k)
+            )
+            for message, answer in cur.fetchall():
+                all_relevant_docs.append(ContextDocument(question=message, answer=answer))
+        else:
+            print(f"[DEBUG] Chat history not included: total messages ({total_chat_messages}) below threshold ({config.MIN_TOTAL_CHAT_MESSAGES_FOR_HISTORY}) or CHAT_HISTORY_LIMIT is 0.")
+
 
         print(f"[{__name__}] Got {len(all_relevant_docs)} documents (medquad+mimic+chat).")
         return all_relevant_docs
@@ -77,4 +90,3 @@ def retrieve_relevant_data(
     finally:
         if conn:
             conn.close()
-

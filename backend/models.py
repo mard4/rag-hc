@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import List, Dict,Optional
+from typing import List, Dict,Optional,Any
 from datetime import date
 from datetime import datetime
 
@@ -20,8 +20,16 @@ class QueryResponse(BaseModel):
     answer: str # La risposta generata dall'LLM
     context_used: List[ContextDocument] # I documenti di contesto utilizzati per generare la risposta
 
+
+class Suggestion(BaseModel):
+    type: str # 'question' o 'doctor_recommendation'
+    value: str 
+    data: Optional[Dict[str, Any]] = None
+
 class ExtendedQueryResponse(QueryResponse):
-    suggestions: List[str]
+    answer: str
+    context_used: List[ContextDocument]
+    suggestions: List[Suggestion]
     
 ## =========== Login ================== ##
 
@@ -67,29 +75,71 @@ class PatientInDB(UserBase):
     phone_number: str
 
 # CRUD: bookings
+
 class BookingCreate(BaseModel):
-    doctor_id: int
     patient_id: int
-    appointment_date: datetime
+    doctor_id: int
+    appointment_date: datetime 
+    reason_for_visit: Optional[str] = None
+
+# class BookingIn(BaseModel):
+#     doctor_id: int
+#     appointment_date: datetime 
+#     reason_for_visit: Optional[str] = None 
+# class BookingOut(BaseModel):
+#     id: int
+#     patient_id: int
+#     doctor_id: int
+#     name: str
+#     surname: str
+#     appointment_date: datetime
+#     reason_for_visit: Optional[str] = None
+#     status: str
+#     created_at: datetime
+class BookingIn(BaseModel):
+    doctor_id: int
+    appointment_date: datetime 
     reason_for_visit: str
 
-class BookingOut(BookingCreate):
+# For retrieving a booking (what the backend sends back)
+class BookingOut(BaseModel):
     id: int
+    patient_id: int
     doctor_id: int
+    doctor_name: str
+    doctor_surname: str # Added, comes from JOIN with doctors table
     appointment_date: datetime
     reason_for_visit: str
     status: str
     created_at: datetime
-
 # CRUD: doctors
 
 class DoctorOut(BaseModel):
     id: int
     name: str
     surname: str
+    sex: str
+    birth_date: date
+    address: str
+    phone_number: str
+    email: EmailStr
+    experience_years: int
     specialization: str
     rating: float
 
+# CRUD: patients
+class PatientOut(BaseModel):
+    id: int
+    name: str
+    surname: str
+    sex: str
+    birth_date: str
+    address: str
+    phone_number: str
+    email: EmailStr
+    created_at: date
+
+# TODO get patients bookings BookingsSlot    
 
 class AvailabilitySlot(BaseModel):
     doctor_id: int
@@ -101,3 +151,5 @@ class ChatMessage(BaseModel):
     message: str
     answer: str
     timestamp: datetime
+
+

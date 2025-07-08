@@ -17,7 +17,9 @@ def list_doctors(db=Depends(get_db)):
     conn, cur = db
     try:
         cur.execute("""
-            SELECT id, name, surname, specialization, rating FROM doctors
+            SELECT id, name, surname,sex,
+                    birth_date, address, phone_number, email,
+                    experience_years,specialization, rating, created_at FROM doctors
             ORDER BY rating DESC
         """)
         rows = cur.fetchall()
@@ -31,7 +33,7 @@ def list_doctors(db=Depends(get_db)):
 @router.get("/{doctor_id}/availability", response_model=AvailabilitySlot)
 def get_doctor_availability(doctor_id: int, db=Depends(get_db)):
     """TO DO EDIT 
-    Restituisce slot fittizi di disponibilità di un medico"""
+    slot fittizi di disponibilità di un medico"""
     from datetime import datetime, timedelta
     conn, cur = db
     try:

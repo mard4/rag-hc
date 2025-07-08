@@ -25,3 +25,20 @@ def get_db():
             cur.close()
         if conn:
             conn.close()
+
+
+def insert_chat_message(conn, cur, patient_id: int, message: str, answer: str):
+    """
+    Inserisce un nuovo messaggio e la sua risposta nella tabella dello storico chat.
+    """
+    try:
+        cur.execute(
+            """
+            INSERT INTO chat (patient_id, message, answer)
+            VALUES (%s, %s, %s)
+            """,
+            (patient_id, message, answer)
+        )
+    except Exception as e:
+        print(f"Errore durante l'inserimento del messaggio chat: {e}")
+        raise 

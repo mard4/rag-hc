@@ -28,6 +28,7 @@ export class LoginComponent {
 
   onSubmit(): void {
     this.errorMessage = null;
+    console.log("onSubmit called!");
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
       this.authService.login({ email, password }).subscribe({

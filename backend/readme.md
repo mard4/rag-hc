@@ -1,38 +1,54 @@
 # Backend
 
+Espone API per CRUD operations e per la generazione di risposte contestuali tramite Retrieval Augmented Generation (RAG)
 
-## RAG
+![alt text](readmeimg.png)
+## Consultation & Management (CRUD - Gestione Appuntamenti)
+Espone API REST per la consultazione e gestione di:
 
-### Contesto
-- Riceve query da utente
-- Parte `services/db_service.py`:
-    - Genererà l'embedding della query dell'utente
-    - Eseguirà una query di similarità vettoriale sulla tabella medquad per trovare le domande/risposte più rilevanti
-    - Eseguirà una query di similarità vettoriale sulla tabella mimic_notes per trovare le note cliniche più rilevanti 
-    - Combinerà questi due set di risultati.prendendo i top-K (hyperaparameter in `config.py`) risultati dopo averli uniti e ordinati per similarità.
-    - Passerà questo contesto combinato all'LLM.
+- Pazienti : `/patients`
+- Dottori : `/doctors`
+- Appuntamenti :  `/bookings`
+- Storico chat : `/chat`
 
-- Parte `services/llm_service.py` LLM per Sintesi Multi-Contesto:
-    - LLM riceverà un prompt che include sia le informazioni da MedQuAD (domande/risposte dirette) sia quelle da MIMIC-III (note cliniche più dettagliate/specifiche di casi reali).
+## RAG 
 
-## Struttura
-- `services/`: Contiene i servizi per interagire con il database e l'LLM.
-    - `db_service.py`: Gestisce le operazioni di database, inclusa la generazione di embedding e le query di similarità.
-    - `llm_service.py`: Gestisce le interazioni con l'LLM, inclusa la sintesi delle risposte basate sui contesti forniti.
+1. Ricezione della query utente `/ask`
+2. **`services/db_service.py`**:
+   - Genera l'embedding della query
+   - Classifica l’intento:
+     - Se l’intento è uno tra:
+       - `SALUTO_GENERALE`
+       - `INFORMAZIONE_ASSISTENTE`
+       - `PRENOTAZIONE_MEDICO`  
+       👉 genera una risposta immediata, inviata direttamente al frontend.
+     - Se l’intento è `ALTRO`:
+       - Esegue query di similarità per trovare:
+         1. Documenti più simili da **MedQuAD** (Q/A)
+         2. Documenti più simili da **MIMIC-III** (context + Q/A)
+         3. Messaggi recenti dallo **storico chat** del paziente
+       - Unisce e ordina i risultati per similarità, prendendo i top-K documenti (hyperparametro in `config.py`)
+       - Passa il contesto aggregato all’LLM
 
-- `config.py`: chiavi API, hyperparametri per la similarità vettoriale.  
-- `models.py`: 
-- `main.py`:
-- `connection.py`: funzione per connettersi al database  
+3. **`services/llm_service.py`**:
+   - L’LLM riceve un prompt con i documenti da MedQuAD, MIMIC-III e storico chat
+   - Genera:
+     - Una <b>risposta</b> basata sul contesto
+     - <b>Suggerimenti</b> di follow-up (domande simili)
 
+## Struttura Progetto
 
-## CRUD - GESTIONE APPUNTAMENTI
-
-
-
-
-# TO-DO: 
-- Fix API to save chat history and recommendating questions
-- Better prompt
-- Ricevuta la risposta, adattarla al contesto e mostrare dottori liberi, appuntamenti
-
+- `services/`
+  - `db_service.py`: query vettoriali e gestione embedding
+  - `llm_service.py`: gestione LLM e riconoscimento intento
+- `routers/`
+  - `bookings.py`: gestione appuntamenti
+  - `chat.py`: gestione storico chat
+  - `patients.py`: gestione pazienti
+  - `doctors.py`: gestione dottori
+- `main.py`: entrypoint FastAPI
+- `config.py`: variabili di configurazione e hyperparametri
+- `models.py`: definizione modelli Pydantic
+- `connection.py`: connessione al database
+- `login.py`: gestione registrazione/login
+- `auth_utils.py`: autenticazione JWT

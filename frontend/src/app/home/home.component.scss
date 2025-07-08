@@ -1,83 +1,173 @@
-.chat-container {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 12px;
-    box-shadow: 0 0 10px #ccc;
+.home-container {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  margin: 3rem auto;
+  max-width: 700px; /* Adjusted to allow more space for embedded content */
+  transition: transform 0.3s ease;
   
-    h2 {
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-  
-    .chat-box {
-      max-height: 300px;
-      overflow-y: auto;
-      background: white;
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      border: 1px solid #ddd;
-  
-      .user {
-        text-align: right;
-        color: #333;
-        margin: 0.5rem 0;
-      }
-  
-      .assistant {
-        text-align: left;
-        color: #0c5460;
-        margin: 0.5rem 0;
-      }
-    }
-  
-    .input-box {
-      display: flex;
-      gap: 0.5rem;
-  
-      input {
-        flex: 1;
-        padding: 0.5rem;
-        border-radius: 8px;
-        border: 1px solid #aaa;
-      }
-  
-      button {
-        padding: 0.5rem 1rem;
-        border: none;
-        background: #007bff;
-        color: white;
-        border-radius: 8px;
-        cursor: pointer;
-      }
-    }
-  }
-  
-  .home-container {
-    text-align: center;
-    padding: 4rem 2rem;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    margin: 3rem auto;
-    max-width: 700px;
-    transition: transform 0.3s ease;
-  }
-  
-  .home-container:hover {
-    transform: translateY(-3px);
-  }
-  
-  .home-container h1 {
+  h1 {
     font-size: 2.5rem;
     color: #1a73e8;
     margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Space between text and icon */
   }
-  
-  .home-container p {
+
+  p {
     font-size: 1.25rem;
     color: #555;
+    margin-bottom: 1.5rem;
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid #e9ecef;
+    margin: 2rem 0; /* More vertical space */
+  }
+}
+
+.home-container:hover {
+  transform: translateY(-3px);
+}
+
+/* Styles for the section that contains the embedded chat component */
+.chat-section {
+  max-width: 600px; /* Constrain width similar to the original chat-container */
+  margin: 2rem auto; /* Center it */
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 0 10px #ccc;
+
+  h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+}
+
+/* --- Toggle Buttons Group (Moved from chat.component.scss) --- */
+.toggle-buttons-group {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+  margin: 2rem auto; /* Center and add vertical space */
+  justify-content: center; /* Center the buttons */
+  max-width: 600px; /* Align with chat/history/bookings max-width */
+
+  .toggle-history-button,
+  .toggle-bookings-button {
+    flex: 1; /* Make them take equal space */
+    max-width: 250px; /* Limit their max width */
+    padding: 0.8rem 1rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .toggle-history-button {
+    background: #6c757d; /* Grey */
+    color: white;
+    &:hover {
+      background-color: #5a6268;
+      transform: translateY(-2px);
+    }
+  }
+
+  .toggle-bookings-button {
+    background-color: #007bff; /* Blue for bookings */
+    color: white;
+    &:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+    }
+  }
+}
+
+/* --- Chat History Display (Moved from chat.component.scss) --- */
+.chat-history-display {
+  max-width: 600px; /* Constrain width */
+  margin: 1.5rem auto; /* Center and add vertical space */
+  padding: 1.2rem;
+  background-color: #f0f8ff;
+  border-radius: 10px;
+  border: 1px solid #d0efff;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  h3 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #1a5c92;
+    font-size: 1.1em;
+  }
+
+  p { /* For "Nessuna conversazione precedente." / "Caricamento storico..." */
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    margin-top: 1rem;
+  }
+
+  .history-entry {
+    background-color: white;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.7rem;
+    border: 1px solid #e0f0ff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    font-size: 0.9em;
+
+    .history-question {
+      font-weight: bold;
+      color: #343a40;
+      margin-bottom: 0.3rem;
+    }
+
+    .history-answer {
+      color: #555;
+      margin-bottom: 0.3rem;
+    }
+
+    .history-timestamp {
+      font-size: 0.75em;
+      color: #888;
+      text-align: right;
+    }
+  }
+}
+
+/* --- Bookings Display (Moved from chat.component.scss) --- */
+.bookings-display {
+  max-width: 600px; /* Constrain width */
+  margin: 1.5rem auto; /* Center and add vertical space */
+  padding: 1.2rem;
+  background-color: #e0f7fa; /* Light cyan background for bookings */
+  border-radius: 10px;
+  border: 1px solid #b2ebf2;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  h3 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #00796b; /* Darker green for title */
+    font-size: 1.1em;
   }
   
+  /* The <app-bookings> component's internal styles will apply here.
+     If you want specific outer spacing for it, define it on `app-bookings` selector. */
+  app-bookings {
+    display: block; /* Ensures it takes up its own block space */
+    margin-top: 1rem; /* Space between h3 and the component */
+    // If BookingsComponent has its own padding, you might not need this.
+    // If it relies on a parent for padding, make sure it's applied correctly.
+  }
+}

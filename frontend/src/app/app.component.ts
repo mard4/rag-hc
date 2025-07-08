@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 
 import { HomeComponent } from './home/home.component';
 import { ChatComponent } from './chat/chat.component';
-// import { BookingsComponent } from './bookings/bookings.component';
+import { BookingsComponent } from './bookings/bookings.component';
 
 import { AuthService, User } from './services/auth.service';
 import { Observable } from 'rxjs';
@@ -19,7 +19,7 @@ import { Observable } from 'rxjs';
     RouterLinkActive,
     HomeComponent,
     ChatComponent,
-    // BookingsComponent
+    BookingsComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']  // not styleUrl
