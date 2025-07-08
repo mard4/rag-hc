@@ -1,7 +1,7 @@
 # Frontend
 
 ## Web UI
-![alt text](readme_img.png)
+![alt text](../imgs/frontend.png)
 
 
 ## Struttura dei componenti

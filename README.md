@@ -46,16 +46,18 @@ Sviluppo di un assistente virtuale per il settore sanitario, in grado di
 - Storico chat: accesso alle conversazioni passate
 - Login/registrazione utente
 
-- Oltre alla risposta alla domanda sono stati implementati dei suggerimenti in chat (domande collegate alla domanda precedente dell'utente) 
+- <b> Suggerimenti </b> Oltre alla risposta alla domanda sono stati implementati dei suggerimenti in chat (domande collegate alla domanda precedente dell'utente) 
 
-- Intent detection: il sistema è in grado di riconoscere l'intento dell'utente (es. prenotazione, consultazione storico, ecc.) e rispondere di conseguenza
+- <b> Intent detection </b>: il sistema è in grado di riconoscere l'intento dell'utente (es. prenotazione, consultazione storico, ecc.) e rispondere di conseguenza
 
-- Placeholders TODO: modifica appuntamento / cancellazione appuntamento / modifica password
+- <b>Sentiment Analysis</b> della domanda per determinare il tono della risposta e il tipo di risposta da generare 
+
+<i>nota: Placeholders TODO: modifica appuntamento / cancellazione appuntamento / modifica password </i>
 
 
-## Struttura
+## Struttura (in dettaglio sui readme di ogni ciascun componente)
 
-![alt text](imgs/readme_img.png)
+![alt text](imgs/architecture.png)
 
 - `docker-compose.yml`: file di configurazione per avviare i servizi
 - `backend/`: codice sorgente del backend in FastAPI

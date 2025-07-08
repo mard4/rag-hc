@@ -61,13 +61,13 @@ async def ask_question(
               f"(Email: {current_user.email})")
         print(f"[DEBUG] Query ricevuta: {user_query}")
 
-        # ── INTENT ────────────────────────────────────────────────────────
+        # --  INTENT 
         t0 = time.time()
         intent = LLMService.recognize_intent(user_query)
         print(f"[{__name__}] Intento riconosciuto: '{intent}' "
               f"(Tempo: {time.time() - t0:.4f}s)")
 
-        # ── RISPOSTE RAPIDE SENZA RAG ────────────────────────────────────
+        # -- RISPOSTE RAPIDE SENZA RAG 
         if intent == "SALUTO_GENERALE":
             generated_answer = "Ciao! Come posso aiutarti oggi?"
 
@@ -87,7 +87,7 @@ async def ask_question(
                 )
             )
 
-        # ── PIPELINE RAG ─────────────────────────────────────────────────
+        # -- PIPELINE RAG 
         elif intent in ("RICHIESTA_MEDICA_GENERALE", "ALTRO"):
             # 1) embedding + retrieval
             t1 = time.time()
@@ -117,7 +117,19 @@ async def ask_question(
             print(f"[{__name__}] LLM risposta+suggest "
                   f"(Tempo: {time.time() - t3:.4f}s)")
 
-        # ── PERSISTENZA CHAT ────────────────────────────────────────────
+            # -- SENTIMENT
+            sentiment = LLMService.detect_sentiment_it(request.query)
+            print(f"Sentiment Utente: {sentiment}")
+            label = sentiment.lower().split()[0]  # estrae 'negative', 'neutral', etc.
+
+            if label == "negative":
+                generated_answer += "\n\nSembra che tu sia un po' preoccupato. Posso aiutarti a trovare un medico o rispondere a qualche domanda?"
+            elif label == "positive":
+                generated_answer += "\n\nSono felice che tu sia soddisfatto! Posso aiutarti con qualcos'altro?"
+
+
+        
+        # -- PERSISTENZA CHAT 
         insert_chat_message(conn, cur, current_user.id, user_query, generated_answer)
         conn.commit()
 
