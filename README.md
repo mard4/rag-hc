@@ -67,7 +67,7 @@ Sviluppo di un assistente virtuale per il settore sanitario, in grado di
 ## Visualizzazione
 - API endpoints UI : http://localhost:8000/docs#/
 - WebApp: http://localhost:8080/
-- fare Login con tung@tung.com e password: tung
+- fare Login con tung@tung.com e password: tung oppure Registrarsi
 
 ## Screenshot
 
