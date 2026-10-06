@@ -1,73 +1,73 @@
 # Healthcare Virtual Assistant  <img src="frontend/src/assets/heartbeat.png" alt="alt text" width="40" />
 
-
-### Per avviare il progetto
-
-Pre-requisiti: Docker
-
-```
-docker compose up --build -d
-docker exec -it ollama ollama pull phi3:mini
-```
-
 ![alt text](./imgs/all.gif)
 
-<i>Progetto sviluppato su Ubuntu 22.04 LTS</i>
+### Getting Started
 
-## Descrizione
+Prerequisites: Docker
 
-Sviluppo di un assistente virtuale per il settore sanitario, in grado di
-  - Rispondere a domande complesse dei pazienti
-  - Fornire consigli medici di base
-  - Gestire gli appuntamenti
-  - Comprendere e generare risposte contestuali in modo accurato e naturale
+```bash
+docker compose up --build -d
+docker exec -it ollama ollama pull phi3:mini
 
-## Componenti
+```
 
-<b>Database</b>
-- Relazionale: per informazioni su pazienti, medici, appuntamenti e chat (PostgreSQL)
-- Database vettoriale: per la memorizzazione degli embeddings del sistema RAG (pgvector)
+Project developed on Ubuntu 22.04 LTS
 
-<b>Backend</b>
-- Sviluppato in FastAPI
-- Espone API REST per tutte le operazioni CRUD su pazienti, medici, appuntamenti e chat
+## Description
 
-<b>Frontend</b>
-- Sviluppato in Angular17
-- Permette il dialogo con l'assistente, la visualizzazione delle risposte, la gestione degli appuntamenti e la consultazione dello storico chat
+Development of a virtual assistant for the healthcare sector, capable of:
 
-## Funzionalità integrate
+* Answering complex patient questions
+* Providing basic medical advice
+* Managing appointments
+* Understanding and generating contextual responses accurately and naturally
 
-- Gestione chat: interazione tramite chat con RAG per risposte contestuali (utilizzo dei dataset MedQuAD e MIMIC-III in sinergia)
-- Sistema RAG: risposte accurate grazie ai due dataset
-- Raccomandazione medico: suggerimento del medico più adatto una volta compresa la necessità del cliente
-- Proposta slot liberi: mostrare disponibilità dei medici e prenotazione 
-- Visualizzazione prenotazioni: elenco delle proprie prenotazioni
-- Storico chat: accesso alle conversazioni passate
-- Login/registrazione utente
+## Components
 
-- <b> Suggerimenti </b> Oltre alla risposta alla domanda sono stati implementati dei suggerimenti in chat (domande collegate alla domanda precedente dell'utente) 
+Database
 
-- <b> Intent detection </b>: il sistema è in grado di riconoscere l'intento dell'utente (es. prenotazione, consultazione storico, ecc.) e rispondere di conseguenza
+* Relational: for information regarding patients, doctors, appointments, and chats (PostgreSQL)
+* Vector Database: for storing the RAG system embeddings (pgvector)
 
-- <b>Sentiment Analysis</b> della domanda per determinare il tono della risposta e il tipo di risposta da generare 
+Backend
 
-<i>nota: Placeholders TODO: modifica appuntamento / cancellazione appuntamento / modifica password </i>
+* Developed in FastAPI
+* Exposes REST APIs for all CRUD operations on patients, doctors, appointments, and chats
 
+Frontend
 
-## Struttura (in dettaglio sui readme di ogni ciascun componente)
+* Developed in Angular 17
+* Allows dialogue with the assistant, viewing responses, appointment management, and consulting chat history
+
+## Integrated Features
+
+* Chat management: chat interaction with RAG for contextual responses (synergistic use of MedQuAD and MIMIC-III datasets)
+* RAG System: accurate responses thanks to the two datasets
+* Doctor recommendation: suggesting the most suitable doctor once the client's need is understood
+* Free slots proposal: showing doctors' availability and booking
+* Bookings visualization: list of your own bookings
+* Chat history: access to past conversations
+* User login/registration
+*  Suggestions : In addition to the answer, chat suggestions have been implemented (questions related to the user's previous question)
+*  Intent detection : the system can recognize the user's intent (e.g., booking, checking history, etc.) and respond accordingly
+* Sentiment Analysis of the question to determine the tone and type of response to generate
+
+note: Placeholders TODO: modify appointment / cancel appointment / change password 
+
+## Structure (detailed in the readme of each component)
 
 ![alt text](imgs/architecture.png)
+* `docker-compose.yml`: configuration file to start the services
+* `backend/`: backend source code in FastAPI
+* `frontend/`: frontend source code in Angular
+* `data_ingestion/`: scripts for database creation and data initialization
 
-- `docker-compose.yml`: file di configurazione per avviare i servizi
-- `backend/`: codice sorgente del backend in FastAPI
-- `frontend/`: codice sorgente del frontend in Angular
-- `data_ingestion/`: script per la creazione del database e l'inizializzazione dei dati
+## Visualization
 
-## Visualizzazione
-- API endpoints UI : http://localhost:8000/docs#/
-- WebApp: http://localhost:8080/
-- fare Login con tung@tung.com e password: tung oppure Registrarsi
+* API endpoints UI: http://localhost:8000/docs#/
+* WebApp: http://localhost:8080/
+* Login with tung@tung.com and password: tung, or Register
 
 ## Screenshot
 
